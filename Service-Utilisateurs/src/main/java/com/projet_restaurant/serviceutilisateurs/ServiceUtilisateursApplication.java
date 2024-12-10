@@ -6,7 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @SpringBootApplication
 @EnableConfigurationProperties(RSAConfig.class)
@@ -16,7 +20,10 @@ public class ServiceUtilisateursApplication {
 		SpringApplication.run(ServiceUtilisateursApplication.class, args);
 	}
 	@Bean
-	PasswordEncoder passwordEncoder(){
-		return new BCryptPasswordEncoder();
+	public PasswordEncoder passwordEncoder() {
+		// Définir une map pour les différents encoders
+		Map<String, PasswordEncoder> encoders = new LinkedHashMap<>();
+		encoders.put("bcrypt", new BCryptPasswordEncoder());
+		return new DelegatingPasswordEncoder("bcrypt", encoders);
 	}
 }

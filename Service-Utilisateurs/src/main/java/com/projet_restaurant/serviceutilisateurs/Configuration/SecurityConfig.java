@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth-> auth.requestMatchers("/login/**").permitAll())
                 .authorizeRequests(auth-> auth.requestMatchers("/RefreshToken/**").permitAll())
+                .authorizeRequests(auth -> auth.requestMatchers("/api/v1/users").hasAnyRole("ADMIN","CLIENT"))
                 .authorizeRequests(auth -> auth.anyRequest().authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .httpBasic(Customizer.withDefaults())

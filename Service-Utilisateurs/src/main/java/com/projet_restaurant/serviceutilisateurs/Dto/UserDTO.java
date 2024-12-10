@@ -20,6 +20,8 @@ public class UserDTO {
     private Long id;
     @NotBlank(message = "Le nom d'utilisateur est obligatoire")
     private String username;
+    @NotBlank(message = "Le password est obligatoire")
+    private String password;
     @NotBlank(message = "L'email est obligatoire")
     @Email(message = "L'email doit être valide")
     private String email;

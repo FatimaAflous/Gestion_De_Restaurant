@@ -36,11 +36,6 @@ public class User {
     private Role role;
 
 
-    public User(Long id, String username, String email, Role role) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.role = role;
-    }
+
 
 }
