@@ -1,22 +1,20 @@
 import { Component } from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule ,Validators} from '@angular/forms';
-import {UserService} from '../services/user.service'; // <-- Import the FormsModule
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { UserService } from '../services/user.service'; // <-- Importer le service UserService
 import { CommonModule } from '@angular/common';
-
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [FormsModule , CommonModule],
+  imports: [CommonModule,ReactiveFormsModule], // Assurez-vous que ReactiveFormsModule est importé ici
   templateUrl: './sign-up.component.html',
-  styleUrl: './sign-up.component.css'
+  styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent {
   signupForm: FormGroup;
 
   constructor(private fb: FormBuilder, private userService: UserService) {
-
     this.signupForm = this.fb.group({
-      name: ['', Validators.required],
+      username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });

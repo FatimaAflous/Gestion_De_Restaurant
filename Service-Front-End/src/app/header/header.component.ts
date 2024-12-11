@@ -6,7 +6,6 @@ import { Router } from '@angular/router'; // Importer Router
   selector: 'app-header',
   standalone: true,
   imports: [
-    SignUpComponent,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -16,5 +15,8 @@ export class HeaderComponent {
 
   navigateToSignUp() {
     this.router.navigate(['/sign-up']);
+  }
+  navigateToSignIn() {
+    this.router.navigate(['/sign-in']);
   }
 }

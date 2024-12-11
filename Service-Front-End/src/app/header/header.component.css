@@ -57,10 +57,24 @@
   font-weight: bold;
 }
 
+.navbar .signin-btn:hover {
+  background-color: #f5e4ca; /* Couleur au survol */
+}
+/* Bouton Signup */
+.navbar .signin-btn {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border: 2px solid ;
+  color: #ffb443;
+  cursor: pointer;
+  border-radius: 50px; /* Coins bien arrondis */
+  font-size: 16px;
+  font-weight: bold;
+}
+
 .navbar .signup-btn:hover {
   background-color: #ffb443; /* Couleur au survol */
 }
-
 /* Centrage des éléments */
 body {
   margin: 0;

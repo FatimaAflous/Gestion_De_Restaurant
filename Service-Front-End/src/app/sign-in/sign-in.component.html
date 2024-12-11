@@ -1,0 +1,19 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="email">Email:</label>
+    <input id="email" formControlName="email" type="email" required>
+    <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+      <small *ngIf="loginForm.get('email')">Veuillez entrer une adresse e-mail valide.</small>
+    </div>
+  </div>
+
+  <div>
+    <label for="password">Mot de passe:</label>
+    <input id="password" formControlName="password" type="password" required>
+    <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+      <small *ngIf="loginForm.get('password')">Le mot de passe est requis.</small>
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="loginForm.invalid">Se connecter</button>
+</form>
