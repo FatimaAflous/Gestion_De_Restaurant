@@ -12,6 +12,7 @@ package com.projet_restaurant.serviceutilisateurs.web;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserWeb  {
 
     private final BaseService<UserDTO, Long> baseService;
@@ -20,31 +21,31 @@ public class UserWeb  {
     public UserWeb(BaseService<UserDTO, Long> baseService , PasswordEncoder passwordEncoder) {
         this.baseService = baseService;
     }
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = baseService.create(userDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         UserDTO updatedUser = baseService.update(id, userDTO);
         return ResponseEntity.ok(updatedUser);
     }
+    @PreAuthorize("hasRole('ADMIN')")
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         UserDTO userDTO = baseService.getById(id);
         return ResponseEntity.ok(userDTO);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> userDTOs = baseService.getAll();
         return ResponseEntity.ok(userDTOs);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         baseService.delete(id);

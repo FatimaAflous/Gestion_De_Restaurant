@@ -1,6 +1,7 @@
 package com.projet_restaurant.serviceutilisateurs.Service.Implementation;
 
 import com.projet_restaurant.serviceutilisateurs.Dto.UserDTO;
+import com.projet_restaurant.serviceutilisateurs.Entity.Role;
 import com.projet_restaurant.serviceutilisateurs.Entity.User;
 import com.projet_restaurant.serviceutilisateurs.Mapper.UserMapper;
 import com.projet_restaurant.serviceutilisateurs.Repository.UserRepository;
@@ -28,6 +29,10 @@ public class BaseServiceImpl implements BaseService<UserDTO, Long> {
     public UserDTO create(UserDTO dto) {
         // Convertir le DTO en entité, sauvegarder et retourner le DTO
         User user = userMapper.toEntity(dto);
+        // Si le rôle n'est pas fourni, le définir sur "ROLE_CLIENT" par défaut
+        if (user.getRole() == null) {
+            user.setRole(Role.CLIENT); // Rôle par défaut
+        }
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
