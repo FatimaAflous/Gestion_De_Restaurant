@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up Page</title>
+</head>
+<body>
+<div class="container">
+  <!-- Left Section with Image -->
+  <div class="left-section">
+    <img src="/assets/images/sign-up.jpg" alt="Healthy Food">
+    <div class="text-overlay">
+      <h1>Welcome to F&H </h1>
+      <p>Because life is too short to eat bad food , sign up and let’s fix that!</p>
+    </div>
+  </div>
+
+  <!-- Right Section with Form -->
+  <div class="right-section">
+    <h2>Create an account</h2>
+    <div class="social-buttons">
+      <a href="#" class="social-button google">
+        <i class="fab fa-google"></i>
+        Sign up with Google
+      </a>
+      <a href="#" class="social-button facebook">
+        <i class="fab fa-facebook-f"></i>
+        Sign up with Facebook
+      </a>
+    </div>
+    <div class="divider">- OR -</div>
+    <form [FormGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label for="name">Full Name</label>
+        <input id="name" formControlName="name" type="text" />
+      </div>
+      <div>
+        <label for="email">Email Address</label>
+        <input id="email" formControlName="email" type="email" />
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input id="password" formControlName="password" type="password" />
+      </div>
+      <button type="submit">Sign Up</button>
+    </form>
+    <p class="login-link">Already have an account? <a href="#">Log in</a></p>
+  </div>
+</div>
+</body>
+</html>
