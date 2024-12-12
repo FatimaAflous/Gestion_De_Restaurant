@@ -56,7 +56,16 @@
   font-size: 16px;
   font-weight: bold;
 }
-
+.navbar .logout-btn {
+  padding: 10px 20px;
+  background-color: #fc9c07;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 50px; /* Coins bien arrondis */
+  font-size: 16px;
+  font-weight: bold;
+}
 .navbar .signin-btn:hover {
   background-color: #f5e4ca; /* Couleur au survol */
 }

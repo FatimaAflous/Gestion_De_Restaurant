@@ -1,22 +1,55 @@
-import { Component } from '@angular/core';
-import {SignUpComponent} from '../sign-up/sign-up.component';
-import { Router } from '@angular/router'; // Importer Router
+import { Component , OnInit } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common'; // Importer CommonModule ici
+import { CookieService } from 'ngx-cookie-service'; // Importez un service pour gérer les cookies
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
+    CommonModule // Ajouter CommonModule dans les imports du composant
   ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
-  constructor(private router: Router) {} // Injecter le Router ici
+export class HeaderComponent  implements OnInit {
+  isUserLoggedIn: boolean = false;
+  username: string | null = null;
+  ngOnInit() {
+    // Abonnez-vous à l'état utilisateur
+    this.authService.isLoggedIn$.subscribe(isLoggedIn => {
+      this.isUserLoggedIn = isLoggedIn;
+
+      if (isLoggedIn) {
+        // Récupérez le nom d'utilisateur s'il est connecté
+        this.username = this.authService.getUsernameFromToken();
+
+      } else {
+        this.username = null;
+      }
+    });
+
+    // Vérifiez l'état initial lors du chargement
+    this.authService.checkUserLoginStatus();
+  }
+  constructor(private authService: AuthService, private router: Router ,private cookieService: CookieService) {
+  }
+
+
 
   navigateToSignUp() {
     this.router.navigate(['/sign-up']);
   }
+
   navigateToSignIn() {
     this.router.navigate(['/sign-in']);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.isUserLoggedIn = false;
+    this.username = null;
+    this.router.navigate(['/']);
   }
 }
