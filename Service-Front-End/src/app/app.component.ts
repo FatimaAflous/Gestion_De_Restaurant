@@ -16,7 +16,7 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   title = 'Service-Front-End';
   ngOnInit(): void {
-    this.authService.checkUserLoginStatus();
+    //this.authService.checkUserLoginStatus();
   }
   constructor(private router: Router, private authService:AuthService) {}
 

@@ -22,12 +22,12 @@ export class AdminDashboardComponent implements OnInit {
     this.createPerformanceChart();
      // Abonnez-vous à l'état utilisateur
      this.authService.isLoggedIn$.subscribe(isLoggedIn => {
-      
+
       this.isUserLoggedIn = isLoggedIn;
 
       if (isLoggedIn) {
         // Récupérez le nom d'utilisateur s'il est connecté
-        this.username = this.authService.getUsernameFromToken();
+       // this.username = this.authService.getUsernameFromToken();
 
       } else {
         this.username = null;
@@ -35,7 +35,7 @@ export class AdminDashboardComponent implements OnInit {
     });
 
     // Vérifiez l'état initial lors du chargement
-    this.authService.checkUserLoginStatus();
+   // this.authService.checkUserLoginStatus();
   }
   logout() {
     this.authService.logout();

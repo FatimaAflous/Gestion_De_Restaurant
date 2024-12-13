@@ -17,7 +17,7 @@ export class HeaderComponent  {
 
   isUserLoggedIn: boolean = false;
   username: string | null = null;
-/*
+
   ngOnInit() {
     // Abonnez-vous à l'état utilisateur
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
@@ -25,7 +25,7 @@ export class HeaderComponent  {
 
       if (isLoggedIn) {
         // Récupérez le nom d'utilisateur s'il est connecté
-        this.username = this.authService.getUsernameFromToken();
+        this.loadUserInfo();
 
       } else {
         this.username = null;
@@ -34,11 +34,11 @@ export class HeaderComponent  {
 
     // Vérifiez l'état initial lors du chargement
     this.authService.checkUserLoginStatus();
-  }
-  */
-  constructor(private authService: AuthService, private router: Router ,private cookieService: CookieService) {
+
   }
 
+  constructor(private authService: AuthService, private router: Router ,private cookieService: CookieService) {
+  }
 
 
   navigateToSignUp() {
@@ -48,12 +48,23 @@ export class HeaderComponent  {
   navigateToSignIn() {
     this.router.navigate(['/sign-in']);
   }
-/*
+
 logout() {
     this.authService.logout();
     this.isUserLoggedIn = false;
     this.username = null;
     this.router.navigate(['/']);
   }
-*/
+
+loadUserInfo() {
+  this.authService.getCurrentUser().subscribe(
+    (user) => {
+      this.username = user.username; // Met à jour le nom d'utilisateur dans la vue
+      console.log('Utilisateur connecté :', user);
+    },
+    (error) => {
+      console.error('Erreur lors de la récupération des informations de l\'utilisateur', error);
+    }
+  );
+}
 }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,24 +13,38 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const rolesAllowed = route.data['roles'] as Array<string>;
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    // Récupère l'état de connexion
     const isLoggedIn = this.authService.isUserLoggedIn();
-    const userRole = this.authService.getUserRoleFromToken();
-
-    console.log('isLoggedIn:', isLoggedIn);
-    console.log('userRole:', userRole);
-    console.log('rolesAllowed:', rolesAllowed);
-
-    if (isLoggedIn && userRole && rolesAllowed.includes(userRole)) {
-      return true;
+    if (!isLoggedIn) {
+      alert('Vous n\'êtes pas autorisé à accéder à cette page.');
+      this.router.navigate(['/home']);
+      return of(false);
     }
 
-    // Affichez un message d'alerte
-    alert('Vous n\'êtes pas autorisé à accéder à cette page.');
+    // Récupérer le rôle de l'utilisateur via un observable
+    return this.authService.getCurrentUser().pipe(
+      map(user => {
+        const rolesAllowed = route.data['roles'] as Array<string>;
+        const userRole = user.role;
 
-    // Redirigez l'utilisateur non autorisé
-    this.router.navigate(['/home']);
-    return false;
+        console.log('Rôle de l\'utilisateur:', userRole);
+        console.log('rolesAllowed:', rolesAllowed);
+
+        if (rolesAllowed.includes(userRole)) {
+          return true;
+        } else {
+          alert('Vous n\'êtes pas autorisé à accéder à cette page.');
+          this.router.navigate(['/home']);
+          return false;
+        }
+      }),
+      catchError(error => {
+        console.error('Erreur lors de la récupération des informations de l\'utilisateur', error);
+        alert('Erreur lors de la récupération des informations de l\'utilisateur.');
+        this.router.navigate(['/home']);
+        return of(false); // Retourne directement false pour éviter d'autres actions après une erreur
+      })
+    );
   }
 }

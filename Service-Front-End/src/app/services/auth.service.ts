@@ -1,21 +1,22 @@
 import { Injectable   } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable , catchError, throwError, tap  ,map} from 'rxjs';
 import { CookieService } from 'ngx-cookie-service'; // Importez un service pour gérer les cookies
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject , Subject} from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
   private tokenExpiryCheckInterval = 2 * 60 * 1000; // 5 minutes
   private tokenExpiryMargin = 60 * 1000; // 1 minute
+  private userSubject = new BehaviorSubject<any>(null);
+  public user$ = this.userSubject.asObservable();
 
   public isLoggedInSubject = new BehaviorSubject<boolean>(false); // Gère l'état de connexion
   public isLoggedIn$ = this.isLoggedInSubject.asObservable();
-  isUserLoggedIn(): boolean {
-    return this.isLoggedInSubject.getValue();
-  }
+
 
   username: string | null = null;
   private apiUrl = 'http://localhost:8082';
@@ -37,7 +38,6 @@ export class AuthService {
       })
     );
   }
-
   refreshToken(): Observable<any> {
     const refreshToken = this.cookieService.get('refreshToken');
     if (!refreshToken) {
@@ -47,107 +47,87 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/refresh`, { refreshToken });
   }
 
-  // Optionnel: Méthode pour récupérer l'authentification actuelle (tokens)
-
-  getTokens(): { accessToken: string | null; refreshToken: string | null } {
-    const accessToken = this.cookieService.get('accessToken');
-    const refreshToken = this.cookieService.get('refreshToken');
-
-    return { accessToken, refreshToken };
-  }
-  // Optionnel: Méthode pour supprimer les tokens (déconnexion)
   logout() {
     // Supprimer les tokens des cookies
     this.cookieService.delete('accessToken', '/');
     this.cookieService.delete('refreshToken', '/');
-    console.log('Access token cleared , you are out');
 
+    console.log('Access token cleared , you are out');
      // Mettez à jour l'état de connexion
      this.isLoggedInSubject.next(false);
   }
 
-
-  checkUserLoginStatus(): void {
-    const isValid = this.isTokenValid(); // Vérifie si le token est valide
-    if (isValid) {
-      console.log('Token valide, utilisateur connecté.');
-      this.isLoggedInSubject.next(true);
-    } else {
-      console.log('Token invalide ou non présent, utilisateur non connecté.');
-      this.isLoggedInSubject.next(false);
-    }
+  get isLoggedIn(): Observable<boolean> {
+    return this.isLoggedInSubject.asObservable();
   }
 
-  decodeToken(token: string): any {
-    try {
-      // Split the token to get the payload
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        throw new Error('Invalid token format');
-      }
 
-      // Decode the payload (second part)
-      const payload = parts[1];
-      const decodedPayload = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-      return decodedPayload;
-    } catch (error) {
-      console.error('Erreur lors du décodage du token:', error);
-      return null;
-    }
-  }
 
-  getUsernameFromToken(): string | null {
-    const tokens = this.getTokens();
-    if (tokens.accessToken) {
-      const decodedToken = this.decodeToken(tokens.accessToken);
-      if (decodedToken && decodedToken.username) {
-        return decodedToken.username;
-      }
+//
+
+
+getCurrentUser(): Observable<any> {
+  const token = this.cookieService.get('accessToken'); // Récupérer le token d'accès depuis les cookies
+  console.log('Token récupéré depuis les cookies :', token);
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+  console.log('En-têtes HTTP :', headers);
+
+  return this.http.get<any>(`${this.apiUrl}/infos-user`, { headers }).pipe(
+    tap(response => {
+      console.log('Réponse du serveur :', response);
+      this.userSubject.next(response);  // Met à jour les informations utilisateur
+    }),
+    catchError(error => {
+      console.error('Erreur lors de la récupération des informations de l\'utilisateur', error);
+      return throwError(error);
+    })
+  );
+}
+
+
+//
+decodeToken(token: string): any {
+  try {
+    // Split the token to get the payload
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      throw new Error('Invalid token format');
     }
+
+    // Decode the payload (second part)
+    const payload = parts[1];
+    const decodedPayload = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    return decodedPayload;
+  } catch (error) {
+    console.error('Erreur lors du décodage du token:', error);
     return null;
   }
-  getUserRoleFromToken(): string | null {
-    const tokens = this.getTokens();
-    if (tokens.accessToken) {
-      const decodedToken = this.decodeToken(tokens.accessToken);
-      if (decodedToken && decodedToken.scope) {
-        return decodedToken.scope; // Récupère la valeur de la claim "scope"
-      }
-    }
-    return null;
+}
+
+// Vérifier la validité du token
+isTokenValid(): boolean {
+  const tokens = this.getTokens();
+  console.log('Tokens:', tokens);
+
+  if (tokens?.accessToken) {
+    const decodedToken = this.decodeToken(tokens.accessToken);
+    console.log('Decoded Token:', decodedToken);
+
+    const now = Math.floor(new Date().getTime() / 1000); // Current timestamp in seconds
+    console.log('Current Timestamp:', now);
+
+    const isValid = decodedToken?.exp > now;
+    console.log('Token Expiration Valid:', isValid);
+
+    return isValid;
   }
 
-  isTokenValid(): boolean {
-    const tokens = this.getTokens();
-    console.log('Tokens récupérés:', tokens);
-
-    if (tokens?.accessToken) {
-      console.log('Access token trouvé:', tokens.accessToken);
-      const decodedToken = this.decodeToken(tokens.accessToken);
-      console.log('Token décodé:', decodedToken);
-
-      if (decodedToken?.exp) {
-        const now = Math.floor(new Date().getTime() / 1000); // Timestamp actuel en secondes
-        console.log('Expiration du token (exp):', decodedToken.exp);
-        console.log('Heure actuelle:', now);
-
-        const isValid = decodedToken.exp > now;
-        console.log('Le token est-il valide ?:', isValid);
-        return isValid;
-      } else {
-        console.log('Le token décodé ne contient pas de champ "exp".');
-      }
-    } else {
-      console.log('Aucun access token trouvé.');
-    }
-
-    return false;
-  }
-
-
-
-
-//refresh :
+  console.log('No access token found');
+  return false;
+}
 private startTokenExpiryCheck(): void {
   console.log('Starting token expiry check interval.');
   setInterval(() => {
@@ -170,23 +150,6 @@ private startTokenExpiryCheck(): void {
     }
   }, this.tokenExpiryCheckInterval);
 }
-
-private isTokenAboutToExpire(token: string | undefined): boolean {
-  if (!token) {
-    console.log('No token found.');
-    return false;
-  }
-
-  const payload = this.decodeToken(token);
-  const expiryTime = payload.exp * 1000; // convert to ms
-  const currentTime = Date.now();
-  const timeLeft = expiryTime - currentTime;
-
-  console.log(`Token expires in ${timeLeft / 1000} seconds.`);
-  return timeLeft < this.tokenExpiryMargin;
-}
-
-
 renewAccessToken(): Observable<string> {
   const refreshToken = this.cookieService.get('refreshToken');
   if (!refreshToken) {
@@ -208,4 +171,47 @@ renewAccessToken(): Observable<string> {
   );
 }
 
+
+private isTokenAboutToExpire(token: string | undefined): boolean {
+  if (!token) {
+    console.log('No token found.');
+    return false;
+  }
+
+  const payload = this.decodeToken(token);
+  const expiryTime = payload.exp * 1000; // convert to ms
+  const currentTime = Date.now();
+  const timeLeft = expiryTime - currentTime;
+
+  console.log(`Token expires in ${timeLeft / 1000} seconds.`);
+  return timeLeft < this.tokenExpiryMargin;
+}
+
+// Met à jour le statut de connexion
+/*checkUserLoginStatus(): void {
+  const isValid = this.isTokenValid();
+  this.isLoggedInSubject.next(isValid);
+}
+  */
+ // Récupérer l'état de connexion
+ isUserLoggedIn(): boolean {
+  return this.isLoggedInSubject.getValue();
+}
+
+ // Récupérer les tokens
+  getTokens(): { accessToken?: string } {
+  return {
+    accessToken: this.cookieService.get('accessToken')
+  };
+}
+checkUserLoginStatus(): void {
+  const isValid = this.isTokenValid(); // Vérifie si le token est valide
+  if (isValid) {
+    console.log('Token valide, utilisateur connecté.');
+    this.isLoggedInSubject.next(true);
+  } else {
+    console.log('Token invalide ou non présent, utilisateur non connecté.');
+    this.isLoggedInSubject.next(false);
+  }
+}
 }
