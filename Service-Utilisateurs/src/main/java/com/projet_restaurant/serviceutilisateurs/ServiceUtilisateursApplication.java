@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SpringBootApplication
+
 @EnableConfigurationProperties(RSAConfig.class)
 @Import(CorsConfig.class) // Importer la configuration CORS
 public class ServiceUtilisateursApplication {
