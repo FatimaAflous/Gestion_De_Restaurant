@@ -1,4 +1,4 @@
-<header>
+<header >
   <nav class="navbar">
     <!-- Logo à gauche -->
     <div class="logo">
@@ -21,7 +21,8 @@
 
       <div *ngIf="isUserLoggedIn">
         <span style="color: black;">Bienvenue, {{ username }}</span>
-        <button class="logout-btn" (click)="logout()">Logout</button>
+        <!-- <button class="logout-btn" (click)="logout()">Logout</button> -->
+
       </div>
       <div *ngIf="!isUserLoggedIn">
         <button class="signin-btn" (click)="navigateToSignIn()">Sign In</button>

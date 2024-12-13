@@ -1,4 +1,4 @@
-import { Component , OnInit } from '@angular/core';
+import { Component , OnInit ,Input} from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Importer CommonModule ici
@@ -13,9 +13,11 @@ import { CookieService } from 'ngx-cookie-service'; // Importez un service pour 
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent  implements OnInit {
+export class HeaderComponent  {
+
   isUserLoggedIn: boolean = false;
   username: string | null = null;
+/*
   ngOnInit() {
     // Abonnez-vous à l'état utilisateur
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
@@ -33,6 +35,7 @@ export class HeaderComponent  implements OnInit {
     // Vérifiez l'état initial lors du chargement
     this.authService.checkUserLoginStatus();
   }
+  */
   constructor(private authService: AuthService, private router: Router ,private cookieService: CookieService) {
   }
 
@@ -45,11 +48,12 @@ export class HeaderComponent  implements OnInit {
   navigateToSignIn() {
     this.router.navigate(['/sign-in']);
   }
-
-  logout() {
+/*
+logout() {
     this.authService.logout();
     this.isUserLoggedIn = false;
     this.username = null;
     this.router.navigate(['/']);
   }
+*/
 }

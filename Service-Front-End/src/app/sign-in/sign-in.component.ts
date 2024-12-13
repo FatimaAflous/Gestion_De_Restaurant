@@ -5,6 +5,7 @@ import { UserService } from '../services/user.service';
 import { CommonModule } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service'; // Importez un service pour gérer les cookies
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router'; // Importez le Router
 
 @Component({
   selector: 'app-sign-in',
@@ -24,6 +25,7 @@ export class SignInComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
+    private router: Router, // Injectez le Router
     private cookieService: CookieService // Injectez le service pour gérer les cookies
   ) {
     this.loginForm = this.formBuilder.group({
@@ -52,7 +54,16 @@ export class SignInComponent {
            // Mettez à jour l'état de connexion
  // Mettre à jour l'état de connexion dans le service
  this.authService.isLoggedInSubject.next(true);          // Rediriger l'utilisateur ou gérer une autre action après la connexion
-        },
+ // Rediriger en fonction du rôle
+ const role = this.authService.getUserRoleFromToken();
+ if (role === 'ADMIN') {
+   this.router.navigate(['/admin-dashboard']);
+ } else if (role === 'CLIENT') {
+   this.router.navigate(['/client-dashboard']);
+ } else {
+   console.error('Rôle non pris en charge');
+ }
+},
         (error) => {
           console.error('Échec de la connexion', error);
         }
