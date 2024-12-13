@@ -19,22 +19,30 @@ export class SignUpComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
+  isLoading = false;
 
   onSubmit() {
     if (this.signupForm.valid) {
+      this.isLoading = true; // Activer le spinner
       const user = this.signupForm.value;
       this.userService.createUser(user).subscribe({
         next: (response) => {
+          this.isLoading = false; // Activer le spinner
           alert('User created successfully!');
           this.signupForm.reset(); // Réinitialiser le formulaire
         },
         error: (err) => {
-          console.error(err);
-          alert('Failed to create user. Please try again.');
+          this.isLoading = false; // Désactiver le spinner
+          if (err.status === 400 && err.error.message === 'Email already exists') {
+            alert('This email is already registered.');
+          } else {
+            alert('An error occurred. Please try again.');
+          }
         },
       });
     } else {
       alert('Please fill out all fields correctly.');
     }
   }
+
 }
