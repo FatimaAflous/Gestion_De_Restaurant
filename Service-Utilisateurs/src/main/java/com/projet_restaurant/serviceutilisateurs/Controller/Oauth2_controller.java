@@ -62,7 +62,7 @@ public class Oauth2_controller {
                 .issuer("MS_sec")
                 .subject(userDetails.getUsername()) // Nom d'utilisateur correct
                 .issuedAt(now)
-                .expiresAt(now.plus(10, ChronoUnit.MINUTES))
+                .expiresAt(now.plus(5, ChronoUnit.MINUTES))
                 .claim("username", userDetails.getUsername()) // Ajout du nom d'utilisateur correct
                 .claim("scope", scope)
                 .build();
@@ -90,12 +90,14 @@ public class Oauth2_controller {
                 .httpOnly(true) // Non accessible via JavaScript
                 .secure(true) // Transmission seulement via HTTPS
                 .path("/") // Disponible sur toutes les routes
-                .maxAge(10 * 60) // 10 minutes en secondes
+                .maxAge(5 * 60) // 10 minutes en secondes
                 .sameSite("Strict") // Empêche l'envoi cross-origin
                 .build();
 
         Map<String, String> response = new HashMap<>();
         response.put("Access_Token", accessToken); // Le token d'accès reste dans la réponse
+        response.put("Refresh_Token", refreshToken); // Le token d'accès reste dans la réponse
+
         System.out.println("User authenticated: " + authenticate.getName() + " with role(s): " + scope);
 
         return ResponseEntity.ok()
@@ -142,7 +144,14 @@ public Map<String, String> refreshToken(@RequestParam String refreshToken) {
                 .claim("scope", updatedScope)
                 .build();
         String newAccessToken = jwtEncoder.encode(JwtEncoderParameters.from(accessTokenClaims)).getTokenValue();
-
+        // Créer également un cookie pour le accessToken si nécessaire (pas obligatoire)
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", newAccessToken)
+                .httpOnly(true) // Non accessible via JavaScript
+                .secure(true) // Transmission seulement via HTTPS
+                .path("/") // Disponible sur toutes les routes
+                .maxAge(6 * 60) // 10 minutes en secondes
+                .sameSite("Strict") // Empêche l'envoi cross-origin
+                .build();
         Map<String, String> tokens = new HashMap<>();
         tokens.put("Access_Token", newAccessToken);
         tokens.put("Refresh_Token", refreshToken);
