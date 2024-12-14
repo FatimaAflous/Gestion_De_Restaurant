@@ -56,8 +56,9 @@ public class SecurityConfig {
                 .sessionManagement(sess-> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/login/**", "/Refresh/**", "http://localhost:8082/api/v1/users" ,"http://localhost:8082/login").permitAll()
+                        .requestMatchers("/login/**", "/Refresh/**" /*, "http://localhost:8082/api/v1/users" "http://localhost:8082/login*/).permitAll()
                        )
+                .authorizeRequests(auth -> auth.anyRequest().authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .httpBasic(Customizer.withDefaults())
                 .build();
