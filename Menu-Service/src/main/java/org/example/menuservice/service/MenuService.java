@@ -35,6 +35,7 @@ public class MenuService {
             menu.setDescription(updatedMenu.getDescription());
             menu.setCategory(updatedMenu.getCategory());
             menu.setPrice(updatedMenu.getPrice());
+            menu.setImage(updatedMenu.getImage()); // Mettre à jour l'image
             menu.setPromotion(updatedMenu.getPromotion());
             return menuRepository.save(menu);
         }).orElseThrow(() -> new RuntimeException("Menu not found"));

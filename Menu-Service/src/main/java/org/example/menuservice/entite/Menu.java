@@ -68,7 +68,16 @@ public class Menu {
 
     private Double price; // Prix
 
+    private String image;
     private Boolean isPromotion;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
     // Indique si c'est une promotion
 }
 

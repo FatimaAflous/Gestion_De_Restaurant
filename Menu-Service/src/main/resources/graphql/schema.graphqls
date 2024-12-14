@@ -10,6 +10,7 @@ type Mutation {
         description: String,
         category: String!,
         price: Float!,
+        image: String,
         isPromotion: Boolean
     ): Menu
 
@@ -19,6 +20,7 @@ type Mutation {
         description: String,
         category: String!,
         price: Float!,
+        image: String,
         isPromotion: Boolean
     ): Menu
 
@@ -31,5 +33,6 @@ type Menu {
     description: String
     category: String
     price: Float
+    image: String
     isPromotion: Boolean
 }
