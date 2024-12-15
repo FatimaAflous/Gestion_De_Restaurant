@@ -3,6 +3,8 @@ package com.projet_restaurant.servicecommandes.Entity;
 import com.projet_restaurant.servicecommandes.Dto.UserDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +28,7 @@ public class Commande {
     private Long clientId; // Nom de la propriété en camelCas
 
     @Column(nullable = false)
-    @NotBlank(message = "La date est obligatoire")
+    @NotNull(message = "La date est obligatoire")
     private LocalDateTime date;
 
     @Column(nullable = false)
@@ -34,11 +36,19 @@ public class Commande {
     private String statut;
 
     @Column(nullable = false)
-    @NotBlank(message = "Le prix total a payer est obligatoire")
+    @NotNull(message = "Le prix total a payer est obligatoire")
+    //@Positive(message = "Le prix total doit être positif")
     private Double total;
 
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommandPlat> plats = new ArrayList<>();
+
+
+    public void addPlat(CommandPlat commandPlat) {
+        this.plats.add(commandPlat);
+        commandPlat.setCommande(this); // Associe le plat à cette commande
+    }
+
     // Getters
     public Long getId() {
         return id;

@@ -1,6 +1,7 @@
 package com.projet_restaurant.servicecommandes.Web;
 
 import com.projet_restaurant.servicecommandes.Dto.UserDto;
+import com.projet_restaurant.servicecommandes.Entity.Commande;
 import com.projet_restaurant.servicecommandes.Service.Implementation.CommandServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,6 @@ public class CommandAPI {
             @RequestParam Long userId,
             @RequestBody List<Long> menuIds,
             @RequestHeader("Authorization") String token) {
-        System.out.println("---- Début de createCommande ----");
         System.out.println("Paramètres d'entrée : userId=" + userId + ", menuIds=" + menuIds + ", token=" + token);
 
         try {
@@ -80,7 +80,14 @@ public class CommandAPI {
         }
     }
 
-
+    @GetMapping("/userCommand/{userId}")
+    public ResponseEntity<List<Commande>> getCommandesByUserId(@PathVariable Long userId) {
+        List<Commande> commandes = commandService.getCommandesByUserId(userId);
+        if (commandes.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204 No Content si aucune commande trouvée
+        }
+        return ResponseEntity.ok(commandes); // 200 OK avec la liste des commandes
+    }
 
 
 }

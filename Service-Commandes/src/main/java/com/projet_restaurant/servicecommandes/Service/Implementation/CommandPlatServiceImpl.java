@@ -48,13 +48,36 @@ public class CommandPlatServiceImpl {
         return List.of();
     }
 
-
     public Map<String, Object> getMenuById(Long id) {
-        String query = "query($id: Long!) { menuById(id: $id) { id name description price category } }";
+        System.out.println("Fetching menu with ID: " + id);
+
+        // Construire la requête GraphQL
+        String query = "query($id: ID!) { menuById(id: $id) { id name description price category } }";
         Map<String, Object> variables = Map.of("id", id);
         Map<String, Object> response = executeGraphQLQuery(query, variables);
-        return (Map<String, Object>) response.get("data.menuById");
+
+        // Afficher la réponse brute
+        System.out.println("Raw GraphQL Response: " + response);
+
+        // Vérifier si "data" est présent
+        Map<String, Object> data = (Map<String, Object>) response.get("data");
+        if (data == null) {
+            System.out.println("GraphQL response does not contain 'data'.");
+            return null;
+        }
+
+        // Vérifier si "menuById" est présent
+        Map<String, Object> menuById = (Map<String, Object>) data.get("menuById");
+        if (menuById == null) {
+            System.out.println("Menu with ID: " + id + " not found in GraphQL response.");
+            return null;
+        }
+
+        // Menu trouvé
+        System.out.println("Menu fetched successfully: " + menuById);
+        return menuById;
     }
+
 
     public List<?> getMenusByCategory(String category) {
         String query = "query($category: String!) { menuByCategory(category: $category) { id name description price } }";
@@ -63,7 +86,7 @@ public class CommandPlatServiceImpl {
         return (List<?>) response.get("data.menuByCategory");
     }
 
-    // Ajouter un Plat  a une commande
+    // Ajouter un plat à une commande
     public void addPlatToCommande(Long commandeId, Long menuId, int quantite) {
         System.out.println("Début de la méthode addPlatToCommande avec commandeId : " + commandeId + ", menuId : " + menuId + ", quantite : " + quantite);
 
@@ -78,16 +101,15 @@ public class CommandPlatServiceImpl {
         if (menuData != null) {
             // Crée une nouvelle instance de CommandPlat
             CommandPlat commandePlat = new CommandPlat();
-            commandePlat.setCommande(commande);
             commandePlat.setMenuId(menuId);
             commandePlat.setQuantite(quantite);
-            commandePlat.setPrix((Double) menuData.get("price")); // Prix récupéré depuis les données du menu
+            commandePlat.setPrix((Double) menuData.get("price"));
             System.out.println("Création de CommandPlat avec menuId : " + menuId + ", prix : " + menuData.get("price"));
 
-            // Ajoute CommandPlat à la commande
-            commande.getPlats().add(commandePlat);
+            // Ajoute le plat à la commande
+            commande.addPlat(commandePlat);
 
-            // Enregistre la commande (et ses relations)
+            // Enregistre la commande avec les nouvelles relations
             commandRepository.save(commande);
             System.out.println("Plat ajouté à la commande ID : " + commandeId);
         } else {
@@ -130,7 +152,7 @@ public class CommandPlatServiceImpl {
     public void finalizeCommande(Long commandeId) {
         System.out.println("Début de la méthode finalizeCommande avec commandeId : " + commandeId);
 
-        updateCommandeStatut(commandeId, "terminé");
+        updateCommandeStatut(commandeId, "en cours");
 
         // Optionnel : envoyer une notification de confirmation ou un e-mail à l'utilisateur
         // par exemple, envoyerNotificationCommande(commandeId);

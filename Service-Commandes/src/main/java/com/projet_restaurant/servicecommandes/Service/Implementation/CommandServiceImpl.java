@@ -2,6 +2,7 @@ package com.projet_restaurant.servicecommandes.Service.Implementation;
 
 import com.projet_restaurant.servicecommandes.Client.UserRestFeign;
 import com.projet_restaurant.servicecommandes.Dto.UserDto;
+import com.projet_restaurant.servicecommandes.Entity.CommandPlat;
 import com.projet_restaurant.servicecommandes.Entity.Commande;
 import com.projet_restaurant.servicecommandes.Repository.CommandRepository;
 import org.hibernate.type.descriptor.java.ObjectJavaType;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
@@ -63,7 +65,6 @@ public class CommandServiceImpl {
                 System.err.println("Erreur : token est null ou vide.");
                 throw new IllegalArgumentException("Le token est requis.");
             }
-            System.out.println("Appel à getUserById avec userId=" + userId + " et token=" + token);
 
             // Récupère les informations de l'utilisateur
             Object userDto = getUserById(userId, token);
@@ -73,26 +74,31 @@ public class CommandServiceImpl {
             }
             System.out.println("Utilisateur trouvé avec succès : " + userDto);
 
-            // Étape 4 : Traitement des commandes
-            System.out.println("Traitement de la commande pour userId=" + userId + " avec menuIds=" + menuIds);
-
-
-            System.out.println("Utilisateur trouvé avec l'ID : " + userId);
-
-            // Crée une nouvelle commande
+            // Crée la commande avec les plats sélectionnés
             Commande commande = new Commande();
             commande.setClientId(userId);
             commande.setDate(LocalDateTime.now());
             commande.setStatut("en cours");
             commande.setTotal(0.0); // Initialisé à 0, sera mis à jour après ajout des plats
-            commande = commandRepository.save(commande);
-            System.out.println("Commande créée avec ID : " + commande.getId());
 
-            // Ajoute chaque plat à la commande
+            // Ajout des plats à la commande avant de la persister
             for (Long menuId : menuIds) {
-                commandPlatService.addPlatToCommande(commande.getId(), menuId, 1); // Quantité de 1 par défaut
-                System.out.println("Ajout du plat ID : " + menuId + " à la commande ID : " + commande.getId());
+                Map<String, Object> menuData = commandPlatService.getMenuById(menuId);
+                if (menuData == null) {
+                    System.err.println("Menu introuvable avec l'ID : " + menuId);
+                    throw new NoSuchElementException("Menu introuvable avec l'ID : " + menuId);
+                }
+
+                // Crée une nouvelle instance de CommandPlat
+                CommandPlat commandePlat = new CommandPlat();
+                commandePlat.setMenuId(menuId);
+                commandePlat.setQuantite(1); // Quantité de 1 par défaut
+                commandePlat.setPrix((Double) menuData.get("price"));
+                commande.addPlat(commandePlat); // Ajoute le plat à la commande
             }
+
+            commande = commandRepository.save(commande); // Persiste la commande
+            System.out.println("Commande créée avec ID : " + commande.getId());
 
             // Calcule le total de la commande
             Double total = commandPlatService.calculateTotalForCommande(commande.getId());
@@ -114,6 +120,10 @@ public class CommandServiceImpl {
     }
 
 
+//liste des commandes par client
+    public List<Commande> getCommandesByUserId(Long userId) {
+        return commandRepository.findByClientId(userId);
+    }
 
     /*public Commande creerCommande(Commande commande) {
         double total = commande.getPlats().stream()

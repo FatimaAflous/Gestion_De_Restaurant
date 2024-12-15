@@ -1,5 +1,6 @@
 package com.projet_restaurant.servicecommandes.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ public class CommandPlat {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "commande_id", nullable = false)
+    @JsonIgnore
     private Commande commande;
 
     public Long getId() {

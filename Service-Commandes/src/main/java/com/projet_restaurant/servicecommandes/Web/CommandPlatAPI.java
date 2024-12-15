@@ -26,10 +26,21 @@ public class CommandPlatAPI {
     // Endpoint pour obtenir un menu par ID
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getMenuById(@PathVariable Long id) {
-        Map<String, Object> menu = commandPlatService.getMenuById(id);
-        return ResponseEntity.ok(menu);
+        System.out.println("Received request to fetch menu with ID: " + id);
+        Map<String, Object> menu;
+        try {
+            menu = commandPlatService.getMenuById(id);
+            if (menu == null) {
+                System.out.println("Menu with ID: " + id + " not found.");
+                return ResponseEntity.notFound().build();
+            }
+            System.out.println("Menu with ID: " + id + " found successfully.");
+            return ResponseEntity.ok(menu);
+        } catch (Exception e) {
+            System.out.println("Error fetching menu with ID: " + id + " - " + e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("error", "Unable to fetch menu. Please try again later."));
+        }
     }
-
     // Endpoint pour obtenir des menus par catégorie
     @GetMapping("/category/{category}")
     public ResponseEntity<List<?>> getMenusByCategory(@PathVariable String category) {
