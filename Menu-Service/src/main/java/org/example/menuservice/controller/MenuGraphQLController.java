@@ -23,13 +23,6 @@ public class MenuGraphQLController {
 
     @QueryMapping
     public List<Menu> menus() {
-        /* Récupérer l'authentification en cours
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Afficher le nom de l'utilisateur et ses autorités (scopes)
-        System.out.println("User: " + authentication.getName());
-        System.out.println("Authorities: " + authentication.getAuthorities());
-*/
         return menuService.getAllMenus();
     }
     // Requête pour obtenir les menus par catégorie
