@@ -28,7 +28,7 @@ public class UserMapper {
             return null;
         }
         String encodedPassword = passwordEncoder.encode(dto.getPassword()); // Encoder le mot de passe ici
-        return new User(dto.getId(), dto.getUsername(), encodedPassword,dto.getEmail(), dto.getRole());
+        return new User(dto.getId(), dto.getUsername(), encodedPassword,dto.getEmail(), dto.getRole()); // Utilise la liste des commandes du DTO);
 
     }
 }

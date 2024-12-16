@@ -93,8 +93,8 @@ public class Oauth2_controller {
 
         return ResponseEntity.ok()
                // .header(HttpHeaders.SET_COOKIE, refreshCookie.toString()) // Ajout du cookie dans l'entête de la réponse
-                .header("Access-Token", accessToken) // Ajout du token d'accès dans l'entête HTTP uniquement
-                .header("Refresh-Token", refreshToken) // Ajout du token d'accès dans l'entête HTTP uniquement
+                //.header("Access-Token", accessToken) // Ajout du token d'accès dans l'entête HTTP uniquement
+                //.header("Refresh-Token", refreshToken) // Ajout du token d'accès dans l'entête HTTP uniquement
                 .body(response); // Le token d'accès n'est pas inclus dans le corps de la réponse
     }
 

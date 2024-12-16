@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -34,8 +36,7 @@ public class User {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
-
-
-
+    // Liste d'IDs de commandes
+// Constructeur adapté pour correspondre avec UserMapper
 
 }

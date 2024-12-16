@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.*;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -27,5 +29,7 @@ public class UserDTO {
     private String email;
     @NotBlank(message = "Le rôle est obligatoire")
     private Role role;
+
+
 }
 
