@@ -5,6 +5,8 @@ import com.projet_restaurant.servicecommandes.Dto.UserDto;
 import com.projet_restaurant.servicecommandes.Entity.CommandPlat;
 import com.projet_restaurant.servicecommandes.Entity.Commande;
 import com.projet_restaurant.servicecommandes.Repository.CommandRepository;
+import com.projet_restaurant.servicecommandes.Service.MenuQuantite;
+import jakarta.persistence.Tuple;
 import org.hibernate.type.descriptor.java.ObjectJavaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CommandServiceImpl {
@@ -47,7 +50,7 @@ public class CommandServiceImpl {
     }
 // Creer une Commande
 
-    public Long createCommande(Long userId, List<Long> menuIds, String token) {
+  /*  public Long createCommande(Long userId, List<Long> menuIds, String token) {
         System.out.println("Paramètres d'entrée : userId=" + userId + ", menuIds=" + menuIds + ", token=" + token);
 
         try {
@@ -119,21 +122,77 @@ public class CommandServiceImpl {
         }
     }
 
+*/
+  public Long createCommande(Long userId, List<MenuQuantite> menus, String token) {
+      System.out.println("Paramètres d'entrée : userId=" + userId + ", menus=" + menus + ", token=" + token);
 
-//liste des commandes par client
+      try {
+          // Vérifications des paramètres
+          if (userId == null) {
+              throw new IllegalArgumentException("userId ne peut pas être null.");
+          }
+          if (menus == null || menus.isEmpty()) {
+              throw new IllegalArgumentException("La liste des menus ne peut pas être vide.");
+          }
+          if (token == null || token.isBlank()) {
+              throw new IllegalArgumentException("Le token est requis.");
+          }
+
+          // Vérifie et récupère l'utilisateur
+          Object userDto = getUserById(userId, token);
+          if (userDto == null) {
+              throw new NoSuchElementException("Utilisateur non trouvé avec l'ID : " + userId);
+          }
+
+          // Crée une nouvelle commande
+          Commande commande = new Commande();
+          commande.setClientId(userId);
+          commande.setDate(LocalDateTime.now());
+          commande.setStatut("en cours");
+          commande.setTotal(0.0);
+
+          // Ajoute chaque plat à la commande
+          for (MenuQuantite menuQuantite : menus) {
+              Map<String, Object> menuData = commandPlatService.getMenuById(menuQuantite.getMenuId());
+              if (menuData == null) {
+                  throw new NoSuchElementException("Menu introuvable avec l'ID : " + menuQuantite.getMenuId());
+              }
+
+              // Ajoute le plat avec la quantité spécifiée
+              CommandPlat commandePlat = new CommandPlat();
+              commandePlat.setMenuId(menuQuantite.getMenuId());
+              commandePlat.setQuantite(menuQuantite.getQuantite());
+              commandePlat.setPrix((Double) menuData.get("price") * menuQuantite.getQuantite()); // Total pour ce plat
+              commande.addPlat(commandePlat);
+          }
+
+          // Enregistre la commande
+          commande = commandRepository.save(commande);
+
+          // Calcule et met à jour le total
+          Double total = commandPlatService.calculateTotalForCommande(commande.getId());
+          commande.setTotal(total);
+          commandRepository.save(commande);
+
+          // Finalise la commande
+          commandPlatService.finalizeCommande(commande.getId());
+
+          return commande.getId();
+      } catch (Exception e) {
+          System.err.println("Erreur dans createCommande : " + e.getMessage());
+          throw e;
+      }
+  }
+
+
+    //liste des commandes par client
     public List<Commande> getCommandesByUserId(Long userId) {
         return commandRepository.findByClientId(userId);
     }
-
-    /*public Commande creerCommande(Commande commande) {
-        double total = commande.getPlats().stream()
-                .mapToDouble(plat -> plat.getPrix() * plat.getQuantite())
-                .sum();
-        commande.setTotal(total);
-        commande.setDate(LocalDateTime.now());
-        commande.setStatut("en cours");
-        return commandRepository.save(commande);
+    public List<Commande> getAllCommandes() {
+        return commandRepository.findAllByOrderByIdDesc();
     }
+  /*
 
     public Commande mettreAJourStatut(Long id, String nouveauStatut) {
         Commande commande = commandRepository.findById(id)
@@ -141,14 +200,41 @@ public class CommandServiceImpl {
         commande.setStatut(nouveauStatut);
         return commandRepository.save(commande);
     }
-
-    public List<Commande> getCommandesParClient(Long clientId) {
-        return commandRepository.findByClientId(clientId);
-    }
-
-    public List<Commande> getToutesLesCommandes() {
-        return commandRepository.findAll();
-    }
-
      */
+  public void annulerCommande(Long commandeId, String token) {
+      System.out.println("Paramètres d'entrée : commandeId=" + commandeId + ", token=" + token);
+
+      try {
+          // Vérifications des paramètres
+          if (commandeId == null) {
+              throw new IllegalArgumentException("commandeId ne peut pas être null.");
+          }
+          if (token == null || token.isBlank()) {
+              throw new IllegalArgumentException("Le token est requis.");
+          }
+
+          // Vérifie si la commande existe
+          Optional<Commande> optionalCommande = commandRepository.findById(commandeId);
+          if (optionalCommande.isEmpty()) {
+              throw new NoSuchElementException("Commande introuvable avec l'ID : " + commandeId);
+          }
+
+          // Récupère la commande
+          Commande commande = optionalCommande.get();
+
+          // Suppression des plats associés
+          List<CommandPlat> plats = commande.getPlats();
+          if (plats != null && !plats.isEmpty()) {
+              plats.forEach(plat -> commandPlatService.deletePlatById(plat.getId()));
+          }
+
+          // Suppression de la commande
+          commandRepository.delete(commande);
+          System.out.println("Commande avec l'ID " + commandeId + " a été annulée et supprimée.");
+      } catch (Exception e) {
+          System.err.println("Erreur dans annulerCommande : " + e.getMessage());
+          throw e;
+      }
+  }
+
 }

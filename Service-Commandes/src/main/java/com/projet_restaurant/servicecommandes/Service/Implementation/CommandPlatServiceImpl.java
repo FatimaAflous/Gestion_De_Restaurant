@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 @Service
 public class CommandPlatServiceImpl {
     @Autowired
@@ -87,6 +88,7 @@ public class CommandPlatServiceImpl {
     }
 
     // Ajouter un plat à une commande
+
     public void addPlatToCommande(Long commandeId, Long menuId, int quantite) {
         System.out.println("Début de la méthode addPlatToCommande avec commandeId : " + commandeId + ", menuId : " + menuId + ", quantite : " + quantite);
 
@@ -146,8 +148,11 @@ public class CommandPlatServiceImpl {
                 .sum();
         System.out.println("Total calculé pour la commande ID : " + commandeId + " est : " + total);
 
-        return total;
-    }
+// Utilise BigDecimal pour arrondir à 2 chiffres après la virgule
+        BigDecimal formattedTotal = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+        System.out.println("Total formaté : " + formattedTotal);
+
+        return formattedTotal.doubleValue();    }
 
     public void finalizeCommande(Long commandeId) {
         System.out.println("Début de la méthode finalizeCommande avec commandeId : " + commandeId);
@@ -159,5 +164,8 @@ public class CommandPlatServiceImpl {
         System.out.println("Commande ID : " + commandeId + " finalisée.");
     }
 
+    public void deletePlatById(Long platId) {
+        commandPlatRepository.deleteById(platId); // Méthode standard de JpaRepository
+    }
 
 }

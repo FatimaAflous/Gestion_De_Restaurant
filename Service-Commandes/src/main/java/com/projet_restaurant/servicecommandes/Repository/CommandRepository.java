@@ -12,4 +12,6 @@ public interface CommandRepository extends JpaRepository<Commande,Long> {
     @Query("SELECT c FROM Commande c WHERE c.clientId = :clientId")
     List<Commande> findByClientId(@Param("clientId") Long clientId);
 
+    @Query("SELECT c FROM Commande c ORDER BY c.id DESC")
+    List<Commande> findAllByOrderByIdDesc();
 }
