@@ -23,6 +23,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(auth -> auth.pathMatchers("/SERVICE-UTILISATEURS/login").permitAll())
+                .authorizeExchange(auth -> auth.pathMatchers("/SERVICE-UTILISATEURS/api/v1/users").permitAll())
+               // .authorizeExchange(auth -> auth.pathMatchers("/SERVICE-COMMANDES/").permitAll())
                 .authorizeExchange(auth -> auth.pathMatchers("/MENU-SERVICE/graphql").permitAll()/*.hasAnyAuthority("ADMIN", "CLIENT")*/)
                 .authorizeExchange(auth -> auth.anyExchange().authenticated())
                          .oauth2ResourceServer(oauth2 -> oauth2.jwt());
