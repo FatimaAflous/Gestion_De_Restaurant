@@ -1,6 +1,10 @@
 package com.projet_restaurant.servicecommandes.Service.Implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.projet_restaurant.servicecommandes.Client.UserRestFeign;
+import com.projet_restaurant.servicecommandes.Dto.PaymentRequest;
 import com.projet_restaurant.servicecommandes.Dto.UserDto;
 import com.projet_restaurant.servicecommandes.Entity.CommandPlat;
 import com.projet_restaurant.servicecommandes.Entity.Commande;
@@ -8,6 +12,7 @@ import com.projet_restaurant.servicecommandes.Repository.CommandRepository;
 import com.projet_restaurant.servicecommandes.Service.MenuQuantite;
 import jakarta.persistence.Tuple;
 import org.hibernate.type.descriptor.java.ObjectJavaType;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,6 +26,9 @@ import java.util.Optional;
 @Service
 public class CommandServiceImpl {
     @Autowired
+    private final RabbitTemplate rabbitTemplate;
+
+    @Autowired
     private CommandRepository commandRepository;
     @Autowired
     private final UserRestFeign userRestFeign;
@@ -28,9 +36,11 @@ public class CommandServiceImpl {
     private CommandPlatServiceImpl commandPlatService;
 
 
+
     @Autowired
-    public CommandServiceImpl(UserRestFeign userRestFeign) {
+    public CommandServiceImpl(UserRestFeign userRestFeign , RabbitTemplate rabbitTemplate) {
         this.userRestFeign = userRestFeign;
+        this.rabbitTemplate = rabbitTemplate;
     }
 //Recuperer les infos des cleints a travers srvice User via Feign
     public Object getUserById(Long userId, String token) {
@@ -48,81 +58,7 @@ public class CommandServiceImpl {
         }
         return userDto;
     }
-// Creer une Commande
 
-  /*  public Long createCommande(Long userId, List<Long> menuIds, String token) {
-        System.out.println("Paramètres d'entrée : userId=" + userId + ", menuIds=" + menuIds + ", token=" + token);
-
-        try {
-            // Étape 1 : Vérification des paramètres d'entrée
-            if (userId == null) {
-                System.err.println("Erreur : userId est null.");
-                throw new IllegalArgumentException("userId ne peut pas être null.");
-            }
-            if (menuIds == null || menuIds.isEmpty()) {
-                System.err.println("Erreur : menuIds est null ou vide.");
-                throw new IllegalArgumentException("menuIds ne peut pas être null ou vide.");
-            }
-
-            if (token == null || token.isBlank()) {
-                System.err.println("Erreur : token est null ou vide.");
-                throw new IllegalArgumentException("Le token est requis.");
-            }
-
-            // Récupère les informations de l'utilisateur
-            Object userDto = getUserById(userId, token);
-            if (userDto == null) {
-                System.err.println("Utilisateur non trouvé avec l'ID : " + userId);
-                throw new NoSuchElementException("Utilisateur non trouvé avec l'ID : " + userId);
-            }
-            System.out.println("Utilisateur trouvé avec succès : " + userDto);
-
-            // Crée la commande avec les plats sélectionnés
-            Commande commande = new Commande();
-            commande.setClientId(userId);
-            commande.setDate(LocalDateTime.now());
-            commande.setStatut("en cours");
-            commande.setTotal(0.0); // Initialisé à 0, sera mis à jour après ajout des plats
-
-            // Ajout des plats à la commande avant de la persister
-            for (Long menuId : menuIds) {
-                Map<String, Object> menuData = commandPlatService.getMenuById(menuId);
-                if (menuData == null) {
-                    System.err.println("Menu introuvable avec l'ID : " + menuId);
-                    throw new NoSuchElementException("Menu introuvable avec l'ID : " + menuId);
-                }
-
-                // Crée une nouvelle instance de CommandPlat
-                CommandPlat commandePlat = new CommandPlat();
-                commandePlat.setMenuId(menuId);
-                commandePlat.setQuantite(1); // Quantité de 1 par défaut
-                commandePlat.setPrix((Double) menuData.get("price"));
-                commande.addPlat(commandePlat); // Ajoute le plat à la commande
-            }
-
-            commande = commandRepository.save(commande); // Persiste la commande
-            System.out.println("Commande créée avec ID : " + commande.getId());
-
-            // Calcule le total de la commande
-            Double total = commandPlatService.calculateTotalForCommande(commande.getId());
-            commande.setTotal(total);
-            commandRepository.save(commande); // Mise à jour de la commande avec le total
-            System.out.println("Total de la commande ID : " + commande.getId() + " mis à jour à : " + total);
-
-            // Finalise la commande (en statut "terminé")
-            commandPlatService.finalizeCommande(commande.getId());
-            System.out.println("Commande ID : " + commande.getId() + " a été finalisée.");
-
-            return commande.getId(); // Retourne l'ID de la commande créée
-        } catch (Exception e) {
-            // Étape de gestion des erreurs
-            System.err.println("Erreur dans createCommande : " + e.getMessage());
-            e.printStackTrace();
-            throw e; // Relancer l'exception pour le gestionnaire d'erreurs global
-        }
-    }
-
-*/
   public Long createCommande(Long userId, List<MenuQuantite> menus, String token) {
       System.out.println("Paramètres d'entrée : userId=" + userId + ", menus=" + menus + ", token=" + token);
 
@@ -176,13 +112,16 @@ public class CommandServiceImpl {
 
           // Finalise la commande
           commandPlatService.finalizeCommande(commande.getId());
-
+          // Publication de la commande dans RabbitMQ
+          envoyerCommande(commande);
           return commande.getId();
       } catch (Exception e) {
           System.err.println("Erreur dans createCommande : " + e.getMessage());
           throw e;
       }
   }
+  //méthode pour transférer les informations de commande au service de paiement
+
 
 
     //liste des commandes par client
@@ -236,5 +175,24 @@ public class CommandServiceImpl {
           throw e;
       }
   }
+//Gestion de paiement
+// Méthode pour envoyer les informations de commande à RabbitMQ
+public void envoyerCommande(Commande commande) {
+    System.out.println("Envoi de la commande à RabbitMQ : " + commande);
 
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());  // Ajouter le module pour gérer LocalDateTime
+
+    try {
+        String commandeJson = objectMapper.writeValueAsString(commande);
+        rabbitTemplate.convertAndSend("commande.queue", commandeJson);
+        System.out.println("Commande envoyée avec succès.");
+    } catch (JsonProcessingException e) {
+        System.err.println("Erreur de conversion de la commande en JSON : " + e.getMessage());
+        throw new RuntimeException("Erreur lors de la conversion de la commande en JSON", e);
+    }
 }
+}
+
+
+

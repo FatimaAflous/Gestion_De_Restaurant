@@ -1,2 +1,16 @@
-package com.projet_restaurant.servicecommandes.Dto;public class PaymentResponse {
+package com.projet_restaurant.servicecommandes.Dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class PaymentResponse {
+    private boolean success;
+    private String status;
+    private String message;
 }
