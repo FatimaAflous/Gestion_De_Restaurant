@@ -1,5 +1,6 @@
 package org.example.menuservice.controller;
 
+import org.example.menuservice.dto.MenuDto;
 import org.example.menuservice.entite.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.example.menuservice.service.MenuService;
 
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -22,7 +24,7 @@ public class MenuGraphQLController {
     // Requête pour obtenir tous les menus
 
     @QueryMapping
-    public List<Menu> menus() {
+    public List<MenuDto> menus() {
         return menuService.getAllMenus();
     }
     // Requête pour obtenir les menus par catégorie
@@ -39,27 +41,49 @@ public class MenuGraphQLController {
 
     // Mutation pour ajouter un menu
     @MutationMapping
-   // @PreAuthorize("hasAuthority('ADMIN')")
     public Menu addMenu(
             @Argument String name,
             @Argument String description,
             @Argument String category,
             @Argument Double price,
-            @Argument String image, // Ajout de l'image
-            @Argument Boolean isPromotion,
-            @Argument String allergens
-
+            @Argument String image, // Image sous forme de chaîne Base64
+            @Argument Boolean isPromotion
     ) {
+        System.out.println("Entrée dans addMenu avec les paramètres suivants:");
+        System.out.println("Nom : " + name);
+        System.out.println("Description : " + description);
+        System.out.println("Catégorie : " + category);
+        System.out.println("Prix : " + price);
+        System.out.println("Image (Base64) : " + image);
+        System.out.println("Promotion : " + isPromotion);
+
         Menu menu = new Menu();
         menu.setName(name);
         menu.setDescription(description);
         menu.setCategory(category);
         menu.setPrice(price);
-        menu.setImage(image); // Affecter l'image
+
+        try {
+            // Convertir l'image Base64 en byte array
+            byte[] imageBytes = Base64.getDecoder().decode(image);
+            System.out.println("Image convertie en byte array de taille : " + imageBytes.length);
+            menu.setImage(imageBytes); // Stocke les bytes de l'image
+        } catch (IllegalArgumentException e) {
+            // La conversion échoue si le format Base64 est incorrect
+            System.err.println("Erreur de conversion de l'image Base64 : " + e.getMessage());
+            throw new RuntimeException("Erreur lors de la conversion de l'image en byte array", e);
+        }
+
         menu.setPromotion(isPromotion);
 
-        return menuService.addMenu(menu);
+        Menu savedMenu = menuService.addMenu(menu);
+
+        System.out.println("Menu ajouté avec l'ID : " + savedMenu.getId());
+
+        return savedMenu;
     }
+
+
 
     // Mutation pour mettre à jour un menu
     @MutationMapping
@@ -70,16 +94,17 @@ public class MenuGraphQLController {
             @Argument String description,
             @Argument String category,
             @Argument Double price,
-            @Argument String image, // Ajout de l'image
-            @Argument Boolean isPromotion,
-            @Argument String allergens
+            @Argument String image, // Image sous forme de byte array
+            @Argument Boolean isPromotion
     ) {
         Menu updatedMenu = new Menu();
         updatedMenu.setName(name);
         updatedMenu.setDescription(description);
         updatedMenu.setCategory(category);
         updatedMenu.setPrice(price);
-        updatedMenu.setImage(image); // Affecter l'image
+      //  updatedMenu.setImage(image); // Affecter l'image
+        byte[] imageBytes = Base64.getDecoder().decode(image);
+        updatedMenu.setImage(imageBytes);
         updatedMenu.setPromotion(isPromotion);
         return menuService.updateMenu(id, updatedMenu);
     }

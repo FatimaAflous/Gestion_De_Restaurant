@@ -1,12 +1,28 @@
 package org.example.menuservice.entite;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+
+    private String name; // Nom du plat ou menu
+
+    private String description; // Description détaillée
+
+    private String category; // entrée, plat principal, dessert
+
+    private Double price; // Prix
+
+   //private String image;
+ @Lob
+   private byte[] image; // Image sous forme de byte array
+    private Boolean isPromotion;
+
     public Double getPrice() {
         return price;
     }
@@ -39,10 +55,6 @@ public class Menu {
         this.id = id;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
 
     public String getCategory() {
         return category;
@@ -60,22 +72,12 @@ public class Menu {
         this.category = category;
     }
 
-    private String name; // Nom du plat ou menu
 
-    private String description; // Description détaillée
-
-    private String category; // entrée, plat principal, dessert
-
-    private Double price; // Prix
-
-    private String image;
-    private Boolean isPromotion;
-
-    public String getImage() {
+    public byte[]  getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
     // Indique si c'est une promotion

@@ -1,21 +1,28 @@
 package org.example.menuservice.service;
 
 import org.example.menuservice.Repository.MenuRepository;
+import org.example.menuservice.dto.MenuDto;
 import org.example.menuservice.entite.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
     @Autowired
     private MenuRepository menuRepository;
 
-    public List<Menu> getAllMenus() {
-        return menuRepository.findAll();
+
+
+    public List<MenuDto> getAllMenus() {
+        List<Menu> menus = menuRepository.findAll();
+        return menus.stream().map(MenuDto::new).collect(Collectors.toList());
     }
+
 
     public List<Menu> getMenusByCategory(String category) {
         return menuRepository.findByCategory(category);
@@ -24,7 +31,6 @@ public class MenuService {
     public Optional<Menu> getMenuById(Long id) {
         return menuRepository.findById(id);
     }
-
     public Menu addMenu(Menu menu) {
         return menuRepository.save(menu);
     }
