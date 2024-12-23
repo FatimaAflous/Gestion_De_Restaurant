@@ -53,5 +53,7 @@ export class CommandeService {
       );
   }
 
-
+  getAllOrders() {
+    return this.http.get<any[]>(`${this.apiUrl}`);
+  }
 }

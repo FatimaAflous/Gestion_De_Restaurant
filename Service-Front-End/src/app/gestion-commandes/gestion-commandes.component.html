@@ -1,1 +1,26 @@
-<p>gestion-commandes works!</p>
+<table>
+  <thead>
+    <tr>
+      <th>Commande ID</th>
+      <th>Utilisateur</th>
+      <th>Total</th>
+      <th>Statut</th>
+      <th>Items</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let order of orders">
+      <td>{{ order.id }}</td>
+      <td>{{ order.userId }}</td>
+      <td>{{ order.total }}</td>
+      <td>{{ order.status }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let item of order.items">
+            {{ item.productName }} - Quantité: {{ item.quantity }} - Prix: {{ item.price }}
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>

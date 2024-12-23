@@ -27,7 +27,7 @@ export const routes: Routes = [
     { path: 'acceuil', component: AcceuilAdminDashboardComponent},
     { path: '', redirectTo: 'acceuil', pathMatch: 'full' },
     { path: 'gestion-menu', component: GestionMenuComponent},
-    { path: 'gestion-commande', component: GestionCommandesComponent},
+    { path: 'gestion-commandes', component: GestionCommandesComponent},
 
 
   //CLIENT
