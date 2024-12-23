@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Base64;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +23,9 @@ public class OrderItem {
     private Double price;
     private int quantity;
 
+    @Lob
+    private byte[] image;  // Image du produit
+
     public Order getOrder() {
         return order;
     }
@@ -29,6 +33,11 @@ public class OrderItem {
     @JoinColumn(name = "order_id") // Colonne de jointure
     @JsonIgnore  // Ignorer la sérialisation de la relation bidirectionnelle
     private Order order;
+
+    // getters et setters
+
+
+
     public void setOrder(Order order) {
         this.order = order;
     }
@@ -74,4 +83,15 @@ public class OrderItem {
     public void setIdProduct(Long idProduct) {
         this.idProduct = idProduct;
     }
+    // Getters et setters
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+    // Getter pour l'image en Base64
+    // Méthode pour décoder l'image de Base64 et la convertir en tableau de bytes
+
 }

@@ -3,19 +3,26 @@ package com.projet_restaurant.servicecommandes.Service.Implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.projet_restaurant.servicecommandes.Dto.OrderDto;
+import com.projet_restaurant.servicecommandes.Dto.OrderItemDto;
 import com.projet_restaurant.servicecommandes.Entity.Order;
 import com.projet_restaurant.servicecommandes.Entity.OrderItem;
 import com.projet_restaurant.servicecommandes.Entity.OrderStatus;
+import com.projet_restaurant.servicecommandes.Entity.PaymentStatusMessage;
 import com.projet_restaurant.servicecommandes.Repository.OrderRepository;
 import com.projet_restaurant.servicecommandes.Repository.OrderItemRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -41,6 +48,8 @@ public class OrderService {
         System.out.println("Nouvelle commande initialisée avec statut: " + order.getStatus());
 
         List<OrderItem> managedItems = new ArrayList<>();
+        double total = 0; // Initialisation du total
+
         for (OrderItem item : items) {
             System.out.println("Traitement de l'item: " + item.getProductName());
 
@@ -49,13 +58,19 @@ public class OrderService {
             newItem.setProductName(item.getProductName());
             newItem.setPrice(item.getPrice());
             newItem.setQuantity(item.getQuantity());
+            // Utiliser le setter pour définir l'image à partir de Base64
+            if (item.getImage() != null) {
+                newItem.setImage(item.getImage()); // Vous stockez l'image en binaire
+            }
             newItem.setOrder(order); // Associe à la commande
             managedItems.add(newItem);
-
+// Calcul du total pour chaque item
+            total += item.getPrice() * item.getQuantity();
             System.out.println("Item créé et associé à la commande: " + newItem.getProductName());
         }
 
         order.setItems(managedItems);
+        order.setTotal(total); // On assigne le total calculé à l'entité Order
         System.out.println("Tous les items ont été associés à la commande. Total items: " + managedItems.size());
 
         // Sauvegarde la commande avec ses items
@@ -95,6 +110,38 @@ public class OrderService {
         return orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
     }
 
+//Recuperer toutes les commandes
+    /*
+public List<Order> getAllOrdersWithItems() {
+    System.out.println("Récupération de toutes les commandes avec leurs items.");
+
+    // Récupérer toutes les commandes
+    List<Order> orders = orderRepository.findAll(); // Assurez-vous que cette méthode est bien définie dans votre repository
+
+    // Itérer sur chaque commande pour récupérer ses items (normalement géré par JPA)
+    for (Order order : orders) {
+        System.out.println("Commande ID: " + order.getId() + " avec statut: " + order.getStatus());
+
+        // Vous pouvez directement récupérer les items si vous avez une relation @OneToMany ou @ManyToOne définie
+        List<OrderItem> items = order.getItems(); // JPA charge les items associés à la commande automatiquement si la relation est bien définie
+        System.out.println("Nombre d'items dans la commande " + order.getId() + ": " + items.size());
+
+        for (OrderItem item : items) {
+            System.out.println("Item ID: " + item.getId() + " - Produit: " + item.getProductName() + " - Quantité: " + item.getQuantity() + " - Prix: " + item.getPrice());
+        }
+    }
+
+    return orders;
+}
+*/
+@Transactional
+public List<OrderDto> getAllOrdersWithItems() {
+    List<Order> orders = orderRepository.findAllWithItems();  // Récupère toutes les commandes avec leurs items
+    return orders.stream()
+            .map(OrderDto::new)  // Convertir chaque Order en OrderDto
+            .collect(Collectors.toList());
+}
+
 
     public void envoyerCommande(Order commande) {
         System.out.println("Envoi de la commande à RabbitMQ : " + commande);
@@ -116,6 +163,39 @@ public class OrderService {
             // Gestion des erreurs RabbitMQ (si RabbitMQ est inaccessible par exemple)
             System.err.println("Erreur lors de l'envoi de la commande à RabbitMQ : " + e.getMessage());
             throw new RuntimeException("Erreur lors de l'envoi de la commande à RabbitMQ", e);
+        }
+    }
+
+    @RabbitListener(queues = "payment_status.queue")
+    public void listenPaymentStatus(String message) {
+        try {
+            System.out.println("Début de la consommation du message RabbitMQ..."); // Message de début
+
+            // Désérialisation du message
+            ObjectMapper objectMapper = new ObjectMapper();
+            PaymentStatusMessage paymentStatusMessage = objectMapper.readValue(message, PaymentStatusMessage.class);
+
+            // Afficher les données reçues du message pour vérifier
+            System.out.println("Message reçu: " + message);
+            System.out.println("Données du message: " + paymentStatusMessage);
+
+            // Vérifier si la commande existe
+            Optional<Order> orderOptional = orderRepository.findById(paymentStatusMessage.getCommandeId());
+            if (orderOptional.isPresent()) {
+                Order order = orderOptional.get();
+                System.out.println("Commande trouvée: " + order.getId());
+
+                // Mettre à jour le statut de la commande
+                order.setStatus(OrderStatus.PAID); // Mettre à jour le statut de la commande
+                orderRepository.save(order); // Sauvegarder la commande mise à jour
+                System.out.println("Commande " + order.getId() + " mise à jour à 'PAID'");
+            } else {
+                System.out.println("Commande non trouvée pour l'ID: " + paymentStatusMessage.getCommandeId());
+            }
+
+            System.out.println("Fin de la consommation du message RabbitMQ."); // Message de fin
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la consommation du message RabbitMQ : " + e.getMessage());
         }
     }
 

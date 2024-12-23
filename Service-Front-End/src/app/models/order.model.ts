@@ -6,6 +6,7 @@ export interface Order {
     productName: string;
     quantity: number;
     subtotal: number;
+    imageBase64: string
   }[];
   totalPrice: number;  // Prix total de la commande
   createdAt: string;  // Date de création

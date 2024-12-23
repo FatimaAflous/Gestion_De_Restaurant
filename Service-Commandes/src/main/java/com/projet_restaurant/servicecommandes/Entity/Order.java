@@ -24,9 +24,11 @@ import java.util.List;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> items;
 
+    private Double total ;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;  // Status de la commande (ex : PENDING, PAID, SHIPPED)
+
 
     // Getter et Setter pour 'id'
     public Long getId() {
@@ -66,4 +68,14 @@ import java.util.List;
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
+
+    public Double getTotal() {
+        return total;
     }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
+
+}

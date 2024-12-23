@@ -54,6 +54,21 @@ export class CommandeService {
   }
 
   getAllOrders() {
-    return this.http.get<any[]>(`${this.apiUrl}`);
+    return this.http.get<Order[]>(`${this.apiUrl}`).pipe(  // Utilisation du type 'Order[]'
+      tap(orders => {
+        // Vérifie si l'image Base64 est présente pour chaque commande et ses items
+        orders.forEach(order => {
+          console.log("Détails de la commande " + order.id);
+
+          // Parcours des items de la commande pour récupérer l'image Base64
+          order.items.forEach(item => {  // item a le type implicite 'any' grâce à 'Order'
+            console.log("voici contenu de l'image pour l'item " + item.id, item.imageBase64);  // Débogage
+          });
+        });
+      })
+    );
   }
+
+
+
 }

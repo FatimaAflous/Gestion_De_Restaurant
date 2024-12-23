@@ -1,0 +1,92 @@
+/* Table Styles */
+.table {
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.table th,
+.table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+
+
+.table-header-custom th {
+  padding: 10px; /* Espace intérieur des cellules */
+  border: 1px solid #ffffff; /* Bordure des cellules */
+  background-color: #464646; /* Couleur de fond personnalisée */
+  color: #ffffff
+
+}
+
+/* Thumbnail Styles */
+.img-thumbnail {
+  width: 100px;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Badge Styles */
+.badge {
+  font-size: 0.9rem;
+  padding: 5px 10px;
+}
+
+.badge-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Item Thumbnail */
+.item-thumbnail {
+  width: 50px;
+  height: auto;
+  margin-right: 8px;
+  border-radius: 4px;
+}
+
+/* List Styles */
+.list-unstyled {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.list-unstyled li {
+  margin-bottom: 10px;
+}
+
+
+.btn-outline-primary {
+  display: flex;
+  align-items: center;
+}
+
+.btn-outline-primary i {
+  margin-right: 5px;
+}
+
+.modal-content {
+  border-radius: 10px;
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+}
+
+.modal-footer .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}

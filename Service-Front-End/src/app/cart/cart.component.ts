@@ -96,7 +96,8 @@ export class CartComponent implements OnInit {
           id: string;  // Identifiant unique du produit
           productName: string;  // Nom du produit/menu
           quantity: number;  // Quantité
-          price: number;  // Prix unitaire
+          price: number;
+          image : string  // Prix unitaire
         };
 
         // Création de l'objet commande avec les informations nécessaires
@@ -106,7 +107,8 @@ export class CartComponent implements OnInit {
             idProduct: item.id,
             productName: item.productName,
             quantity: item.quantity,
-            price: item.quantity * item.price
+            price: item.quantity * item.price,
+            image: item.image // Ajouter l'image en base64
           })),
           totalPrice: this.cartItems.totalPrice
         };
@@ -119,5 +121,5 @@ export class CartComponent implements OnInit {
 
 
 
- 
+
 }

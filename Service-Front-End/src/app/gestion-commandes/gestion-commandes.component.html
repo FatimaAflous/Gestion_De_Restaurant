@@ -1,26 +1,121 @@
-<table>
-  <thead>
-    <tr>
-      <th>Commande ID</th>
-      <th>Utilisateur</th>
-      <th>Total</th>
-      <th>Statut</th>
-      <th>Items</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let order of orders">
-      <td>{{ order.id }}</td>
-      <td>{{ order.userId }}</td>
-      <td>{{ order.total }}</td>
-      <td>{{ order.status }}</td>
-      <td>
-        <ul>
-          <li *ngFor="let item of order.items">
-            {{ item.productName }} - Quantité: {{ item.quantity }} - Prix: {{ item.price }}
-          </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead class="table-header-custom">
+      <tr>
+        <th>ID Commande</th>
+        <th>ID Utilisateur</th>
+        <th>Total</th>
+        <th>Statut</th>
+        <th>Liste des Plats</th>
+        <th>Action</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders" class="align-middle">
+        <td>{{ order.id }}</td>
+        <td>{{ order.userId }}</td>
+        <td>{{ order.total | currency }}</td>
+        <td>
+          <span
+            class="badge"
+            [ngClass]="{
+              'badge-success': order.status === 'PENDING',
+              'badge-warning': order.status === 'PROCESSING',
+              'badge-danger': order.status === 'CANCELLED'
+            }"
+          >
+            {{ order.status }}
+          </span>
+        </td>
+        <td>
+          <ul class="list-unstyled">
+            <li *ngFor="let item of order.items">
+              <div class="d-flex align-items-center">
+
+                <img [src]="item.imageBase64" alt="Image de l'item"  class="item-thumbnail" />
+
+                <div class="ms-2">
+                  <strong>{{ item.productName }}</strong>
+                  <br />
+                  Quantité: {{ item.quantity }}
+                  <br />
+                  Prix: {{ item.price | currency }}
+                </div>
+              </div>
+            </li>
+          </ul>
+        </td>
+        <td>
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="openStatusModal(order)"
+          >
+            <i class="bi bi-pencil-square"></i> Modifier Statut
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="statusModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="statusModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="statusModalLabel">Changer le Statut</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="orderStatus">Statut</label>
+            <select
+              id="orderStatus"
+              class="form-control"
+              [(ngModel)]="selectedOrder.status"
+              name="status"
+            >
+              <option value="PENDING">PENDING</option>
+              <option value="PROCESSING">PROCESSING</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-dismiss="modal"
+        >
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="updateOrderStatus()"
+        >
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
