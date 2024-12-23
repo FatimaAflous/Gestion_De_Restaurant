@@ -1,101 +1,103 @@
-/* Global Styles */
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-  }
+/* Réinitialisation des styles globaux */
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+}
 
-  /* Sidebar Styles */
-  .sidebar {
-    width: 250px;
-    background-color: #343a40;
-    color: white;
-    padding: 20px;
-  }
+/* Dashboard layout */
+.dashboard {
+  display: flex; /* Alignement en ligne avec Flexbox */
+  min-height: 100vh; /* Hauteur complète de la page */
+  margin: 0;
+  padding: 0;
+}
 
-  .sidebar h2 {
-    font-size: 1.5em;
-    margin-bottom: 1em;
-  }
+/* Sidebar styles */
+.sidebar {
+  background-color: #464646; /* Bleu marine */
+  color: #ecf0f1;
+  width: 250px; /* Largeur fixe pour la barre latérale */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box; /* Inclure le padding dans la largeur */
+}
 
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
+/* Main content styles */
+.main-content {
+  flex: 1; /* Prend tout l'espace restant */
+  background-color: #f5f5f5; /* Couleur de fond clair */
+  color: #333;
+  padding: 20px; /* Ajoutez un padding si nécessaire pour l'espacement interne */
+  box-sizing: border-box;
+  overflow: auto; /* Permet le défilement si le contenu déborde */
+  margin: 0; /* Élimine tout espace externe */
+  display: block; /* Remplacez flex si ce n'est pas strictement nécessaire */
+}
 
-  .sidebar ul li {
-    margin: 10px 0;
-  }
+/* Feature list */
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-  .sidebar ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-  }
+.feature-item {
+  margin-bottom: 10px;
+}
 
-  .sidebar ul li a:hover {
-    text-decoration: underline;
-  }
+.feature-link {
+  text-decoration: none;
+  color: #ecf0f1;
+  font-size: 16px;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
 
-  /* Main Content Styles */
-  .main-content {
-    flex: 1;
-    padding: 20px;
-    background-color: #f8f9fa;
-  }
+.feature-link i {
+  margin-right: 10px;
+}
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
+.feature-link:hover,
+.feature-link.active {
+  background-color: #ffc107;
+}
 
-  .header-actions button {
-    margin-left: 10px;
-  }
+/* Logout button */
+.logout-section {
+  margin-top: auto; /* Place le bouton logout tout en bas */
+  text-align: center;
+}
 
-  .stat-cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
+.btn-custom {
+  background-color: #ffc107;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.navbar .logo img {
+  height: 80px; /* Ajuste la taille du logo */
+  width: 10px;
+}
+.logo-section {
+  display: flex;
+  justify-content: center; /* Centre horizontalement */
+  align-items: center;    /* Centre verticalement */
+  height: 120px;          /* Ajustez la hauteur pour votre besoin */
+  margin-bottom: 20px;    /* Espace en dessous */
+  padding: 10px;          /* Espacement interne */
+}
 
-  .card {
-    background: white;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .charts-section {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-top: 20px;
-  }
-
-  .chart-card {
-    background: white;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-  }
-
-  .recent-activity {
-    margin-top: 20px;
-  }
-
-  .recent-activity table {
-    width: 100%;
-    background: white;
-    border-collapse: collapse;
-  }
-
-  .recent-activity th,
-  .recent-activity td {
-    padding: 10px;
-    text-align: left;
-  }
+.logo {
+  max-width: 100%;        /* Largeur maximale de l'image */
+  max-height: 100%;       /* Hauteur maximale de l'image */
+  object-fit: contain;    /* Préserve les proportions */
+  border-radius: 10px;    /* Optionnel : coins arrondis */
+}

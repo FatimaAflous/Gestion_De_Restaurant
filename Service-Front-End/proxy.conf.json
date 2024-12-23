@@ -8,5 +8,10 @@
     "target": "http://localhost:8082/login",
     "secure": false,
     "logLevel": "debug"
+  },
+  "/http://localhost:8090/graphql": {
+    "target": "http://localhost:8082/login",
+    "secure": false,
+    "logLevel": "debug"
   }
 }

@@ -8,7 +8,7 @@ import { CookieService } from 'ngx-cookie-service'; // Importez un service pour 
   selector: 'app-header',
   standalone: true,
   imports: [
-    CommonModule // Ajouter CommonModule dans les imports du composant
+    CommonModule  // Ajouter CommonModule dans les imports du composant
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
@@ -37,7 +37,7 @@ export class HeaderComponent  {
 
   }
 
-  constructor(private authService: AuthService, private router: Router ,private cookieService: CookieService) {
+  constructor(private authService: AuthService, private router: Router ) {
   }
 
 
@@ -48,6 +48,12 @@ export class HeaderComponent  {
   navigateToSignIn() {
     this.router.navigate(['/sign-in']);
   }
+
+
+  navigateToMenu() {
+    this.router.navigate(['/menu']);
+  }
+
 
 logout() {
     this.authService.logout();
@@ -66,5 +72,9 @@ loadUserInfo() {
       console.error('Erreur lors de la récupération des informations de l\'utilisateur', error);
     }
   );
+}
+
+goToCart(): void {
+  this.router.navigate(['/cart']);
 }
 }

@@ -9,7 +9,7 @@ import { AuthService } from './services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, ReactiveFormsModule ,CommonModule  ],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, ReactiveFormsModule ,CommonModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

@@ -3,6 +3,7 @@ import { Observable , catchError, throwError, tap  ,map} from 'rxjs';
 import { CookieService } from 'ngx-cookie-service'; // Importez un service pour gérer les cookies
 import { BehaviorSubject , Subject} from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class AuthService {
   username: string | null = null;
   private apiUrl = 'http://localhost:8082';
 
-  constructor(private http: HttpClient ,  private cookieService: CookieService // Injectez le service pour gérer les cookies
+  constructor(private http: HttpClient ,  public cookieService: CookieService // Injectez le service pour gérer les cookies
   ) {    this.startTokenExpiryCheck();
   }
 
@@ -67,25 +68,25 @@ export class AuthService {
 
 
 getCurrentUser(): Observable<any> {
-  const token = this.cookieService.get('accessToken'); // Récupérer le token d'accès depuis les cookies
-  console.log('Token récupéré depuis les cookies :', token);
-
+  const token = this.cookieService.get('accessToken');
+  console.log('Token récupéré:', token); // Vérifie si le token est bien récupéré
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`
   });
-  console.log('En-têtes HTTP :', headers);
 
   return this.http.get<any>(`${this.apiUrl}/infos-user`, { headers }).pipe(
     tap(response => {
-      console.log('Réponse du serveur :', response);
-      this.userSubject.next(response);  // Met à jour les informations utilisateur
+      console.log('Réponse de getCurrentUser:', response); // Log de la réponse utilisateur
+      this.userSubject.next(response); // Met à jour les informations utilisateur
     }),
     catchError(error => {
+      console.error('Erreur lors de la récupération des informations de l\'utilisateur', error);
       console.error('Erreur lors de la récupération des informations de l\'utilisateur', error);
       return throwError(error);
     })
   );
 }
+
 
 
 //

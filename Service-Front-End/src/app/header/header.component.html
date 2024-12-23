@@ -8,15 +8,19 @@
     <!-- Liens de navigation au centre -->
     <ul class="nav-links">
       <li><a href="#">Home</a></li>
-      <li><a href="#">Menu</a></li>
+     <!-- <a routerLink="/menu">Menu</a> -->
+      <a (click)="navigateToMenu()">Menu</a>
+      <li><a href="#">Reservation</a></li>
       <li><a href="#">About Us</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
 
     <!-- Icône du panier et bouton Signup à droite -->
     <div class="auth">
-      <i class="fa fa-shopping-bag custom-icon"></i>
-      <!-- Affichage du nom d'utilisateur si connecté -->
+      <a (click)="goToCart()">
+        <i class="fa fa-shopping-bag custom-icon"></i>
+      </a>
+           <!-- Affichage du nom d'utilisateur si connecté -->
       <!-- Affichage du nom d'utilisateur si connecté -->
 
       <div *ngIf="isUserLoggedIn">
@@ -26,6 +30,7 @@
       </div>
       <div *ngIf="!isUserLoggedIn">
         <button class="signin-btn" (click)="navigateToSignIn()">Sign In</button>
+        
         <button class="signup-btn" (click)="navigateToSignUp()">Sign Up</button>
       </div>
     </div>
