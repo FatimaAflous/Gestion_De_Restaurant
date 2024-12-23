@@ -2,7 +2,11 @@ from flask import Flask, jsonify , request
 from py_eureka_client.eureka_client import EurekaClient
 from app.services.rabbitmq_consumer import payment_routes
 from flask_cors import CORS  # Importez CORS
+from flasgger import Swagger
+
 app = Flask(__name__)
+swagger = Swagger(app)
+
 # Applique CORS à l'application pour toutes les routes et autorise tous les en-têtes et méthodes
 CORS(app, origins="http://localhost:4200", methods=["GET", "POST", "OPTIONS"], allow_headers=["Content-Type", "Authorization"])
 
@@ -24,7 +28,7 @@ def health_check():
 
 # Enregistrer le Blueprint de paiement
 app.register_blueprint(payment_routes, url_prefix='/payment')
-
 if __name__ == '__main__':
     app.run(debug=True)
 CORS(app)
+print(app.url_map)
