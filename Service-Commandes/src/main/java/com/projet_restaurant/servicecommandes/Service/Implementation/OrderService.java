@@ -132,9 +132,10 @@ public List<Order> getAllOrdersWithItems() {
 
     return orders;
 }
-*/
+
 @Bulkhead(name = "commandeService", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "getAllOrdersWithItemsBulkheadFallback")
 @RateLimiter(name = "commandeService", fallbackMethod = "getAllOrdersWithItemsFallback")
+     */
 @Transactional
 public List<OrderDto> getAllOrdersWithItems() {
     List<Order> orders = orderRepository.findAllWithItems();  // Récupère toutes les commandes avec leurs items
