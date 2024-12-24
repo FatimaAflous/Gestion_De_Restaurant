@@ -12,24 +12,51 @@ import jakarta.validation.constraints.*;
 import java.util.List;
 
 
-@Getter
-@Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
 
 public class UserDTO {
-    @NotBlank(message = "L'id est obligatoire")
     private Long id;
-    @NotBlank(message = "Le nom d'utilisateur est obligatoire")
     private String username;
-    @NotBlank(message = "Le password est obligatoire")
-    private String password;
-    @NotBlank(message = "L'email est obligatoire")
-    @Email(message = "L'email doit être valide")
     private String email;
-    @NotBlank(message = "Le rôle est obligatoire")
     private Role role;
+    private String password;
+
+    public UserDTO(Long id, String username, String password, String email, Role role) {
+    }
 
 
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
 

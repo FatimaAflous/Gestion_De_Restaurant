@@ -31,9 +31,12 @@ public class UserDetailService implements UserDetailsService {
             }
         }
         User u = userOptional.get();
+
+        // Créer une liste des autorités
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(u.getRole().toString()));
 
-        return new org.springframework.security.core.userdetails.User(u.getUsername(), u.getPassword(), authorities);
+        // Utilisez CustomUserDetails qui accepte aussi userId
+        return new CustomUserDetails(u.getUsername(), u.getPassword(), authorities, u.getId());
     }
 }

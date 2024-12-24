@@ -8,6 +8,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import com.projet_restaurant.serviceutilisateurs.Service.UserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,6 +26,12 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -53,10 +60,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception{
 
         return httpSecurity
+                .cors(Customizer.withDefaults())
                 .sessionManagement(sess-> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/login/**", "/Refresh/**" , "http://localhost:8082/api/v1/users", "http://localhost:8082/login*/").permitAll()
+                        .requestMatchers("/login/**", "/refresh/**" , "/infos-user/**","swagger-ui/**").permitAll()
                        )
                 .authorizeRequests(auth -> auth.anyRequest().authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
@@ -64,7 +72,30 @@ public class SecurityConfig {
                 .build();
 
     }
+   /* @Bean
+    CorsConfigurationSource corsConfiguration() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.applyPermitDefaultValues();
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+        return source;
+    }
+    */
+// Configuration CORS
+  /* @Bean
+   public CorsConfigurationSource corsConfigurationSource() {
+       CorsConfiguration config = new CorsConfiguration();
+       config.setAllowedOrigins(List.of("http://localhost:4200")); // Frontend autorisé
+       config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Méthodes HTTP
+       config.setAllowedHeaders(List.of("*")); // Headers autorisés
+       config.setAllowCredentials(true);
 
+       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+       source.registerCorsConfiguration("/**", config); // Applique CORS à tous les endpoints
+       return source;
+   }
+*/
     // signé le token
     @Bean
     JwtEncoder jwtEncoder(){

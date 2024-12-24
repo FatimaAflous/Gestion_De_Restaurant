@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SpringBootApplication
-
 @EnableConfigurationProperties(RSAConfig.class)
 @Import(CorsConfig.class) // Importer la configuration CORS
 public class ServiceUtilisateursApplication {
@@ -35,7 +34,8 @@ public class ServiceUtilisateursApplication {
 		encoders.put("bcrypt", new BCryptPasswordEncoder());
 		return new DelegatingPasswordEncoder("bcrypt", encoders);
 	}
-	@Bean
+
+  @Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.setAllowCredentials(true);
@@ -56,4 +56,6 @@ public class ServiceUtilisateursApplication {
 	public CorsFilter corsFilter() {
 		return new CorsFilter(corsConfigurationSource());
 	}
+
+
 }

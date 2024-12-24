@@ -2,6 +2,9 @@ package com.projet_restaurant.serviceutilisateurs.Controller;
 import com.projet_restaurant.serviceutilisateurs.Dto.LoginRequest;
 import com.projet_restaurant.serviceutilisateurs.Dto.UserDTO;
 import com.projet_restaurant.serviceutilisateurs.Entity.Role;
+import com.projet_restaurant.serviceutilisateurs.Service.CustomUserDetails;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -37,6 +40,7 @@ public class Oauth2_controller {
         this.userDetailsService = userDetailsService;
     }
 
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
         String email = loginRequest.getEmail();
@@ -53,19 +57,21 @@ public class Oauth2_controller {
         // Récupérer le nom d'utilisateur de l'utilisateur
         UserDetails userDetails = (UserDetails) authenticate.getPrincipal();
         String username = userDetails.getUsername(); // récupère le nom d'utilisateur
-
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+        Long userId = customUserDetails.getUserId(); // Accéder à l'ID de l'utilisateur
+        System.out.println("User ID: " + userId); //
         // Récupérer les autorités de l'utilisateur
         String scope = authenticate.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
-
         JwtClaimsSet accessTokenClaims = JwtClaimsSet.builder()
                 .issuer("MS_sec")
                 .subject(userDetails.getUsername()) // Nom d'utilisateur correct
                 .issuedAt(now)
-                .expiresAt(now.plus(5, ChronoUnit.MINUTES))
+                .expiresAt(now.plus(24, ChronoUnit.HOURS))
                 .claim("username", userDetails.getUsername()) // Ajout du nom d'utilisateur correct
                 .claim("scope", scope)
+                .claim("id", userId) // Ajout du claim id
                 .build();
         String accessToken = jwtEncoder.encode(JwtEncoderParameters.from(accessTokenClaims)).getTokenValue();
 
@@ -74,7 +80,7 @@ public class Oauth2_controller {
                 .subject(authenticate.getName()) // email
                 .subject(username) // nom d'utilisateur
                 .issuedAt(now)
-                .expiresAt(now.plus(15, ChronoUnit.MINUTES))
+                .expiresAt(now.plus(1, ChronoUnit.DAYS))
                 .build();
         String refreshToken = jwtEncoder.encode(JwtEncoderParameters.from(refreshTokenClaims)).getTokenValue();
         //Ajouter le refreshToken dans un cookie sécurisé
@@ -97,6 +103,8 @@ public class Oauth2_controller {
                 //.header("Refresh-Token", refreshToken) // Ajout du token d'accès dans l'entête HTTP uniquement
                 .body(response); // Le token d'accès n'est pas inclus dans le corps de la réponse
     }
+
+
 
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, String>> refreshToken(@RequestParam String refreshToken){
@@ -150,30 +158,40 @@ public class Oauth2_controller {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString()) // Ajout du cookie dans l'entête de la réponse
                 .body(tokens);
 }
+
     @GetMapping("/infos-user")
     public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
         try {
             // Récupérer le token JWT depuis le header Authorization
             String token = authorizationHeader.substring(7); // Enlever le préfixe "Bearer "
             System.out.println("Token extrait du header : " + token);
-
             // Décoder le token pour extraire les claims
             Jwt jwt = jwtDecoder.decode(token); // Assurez-vous que jwtDecoder est correctement configuré
             System.out.println("Token décrypté : " + jwt);
             String username = jwt.getClaim("username"); // Prendre le nom d'utilisateur depuis le token
             System.out.println("Nom d'utilisateur extrait : " + username);
-
+            Object idClaim = jwt.getClaim("id");
+            Long id = (idClaim instanceof Integer) ? ((Integer) idClaim).longValue() : (Long) idClaim;
+            System.out.println("l'id extrait après conversion : " + id);
             // Charger l'utilisateur à partir du username extrait
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             System.out.println("Utilisateur trouvé : " + userDetails);
+//wa3
 
+
+            CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+            Long userId = customUserDetails.getUserId(); // Récupération de l'ID utilisateur
+            System.out.println("ID utilisateur extrait : " + userId);
+
+            //wa3
             // Extrait du rôle correctement
             String role = userDetails.getAuthorities().iterator().next().getAuthority();
             System.out.println("Rôle extrait : " + role);
 
             UserDTO userDTO = new UserDTO();
+            userDTO.setId(userId); // Assigner l'ID utilisateur
             userDTO.setUsername(userDetails.getUsername());
-            userDTO.setRole(Role.valueOf(role)); // Utilisez simplement le nom du rôle comme valeur
+            userDTO.setRole(Role.valueOf(role)); // Utilisez simplement le nom du rôle comme valeu
             System.out.println("DTO de l'utilisateur préparé : " + userDTO);
 
             return ResponseEntity.ok(userDTO);
