@@ -1,5 +1,7 @@
 package org.example.menuservice.service;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.example.menuservice.Repository.MenuRepository;
 import org.example.menuservice.dto.MenuDto;
 import org.example.menuservice.entite.Menu;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,10 +20,17 @@ public class MenuService {
     private MenuRepository menuRepository;
 
 
-
+    @CircuitBreaker(name = "menuService", fallbackMethod = "fallbackMenuService")
+    @Retry(name = "menuService", fallbackMethod = "fallbackMenuService")
     public List<MenuDto> getAllMenus() {
         List<Menu> menus = menuRepository.findAll();
         return menus.stream().map(MenuDto::new).collect(Collectors.toList());
+    }
+    public List<MenuDto> fallbackMenuService(Throwable t) {
+        // Log l'erreur dans la console ou un système de log
+        System.out.println("Erreur lors de l'appel au service Menu : " + t.getMessage());
+        // Retourner une liste vide ou d'autres données par défaut
+        return new ArrayList<>();  // Liste vide, mais tu pourrais aussi retourner un message d'erreur comme une Exception
     }
 
 
