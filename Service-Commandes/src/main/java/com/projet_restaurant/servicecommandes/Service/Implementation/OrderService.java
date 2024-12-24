@@ -11,6 +11,8 @@ import com.projet_restaurant.servicecommandes.Entity.OrderStatus;
 import com.projet_restaurant.servicecommandes.Entity.PaymentStatusMessage;
 import com.projet_restaurant.servicecommandes.Repository.OrderRepository;
 import com.projet_restaurant.servicecommandes.Repository.OrderItemRepository;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -18,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -134,6 +133,8 @@ public List<Order> getAllOrdersWithItems() {
     return orders;
 }
 */
+@Bulkhead(name = "commandeService", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "getAllOrdersWithItemsBulkheadFallback")
+@RateLimiter(name = "commandeService", fallbackMethod = "getAllOrdersWithItemsFallback")
 @Transactional
 public List<OrderDto> getAllOrdersWithItems() {
     List<Order> orders = orderRepository.findAllWithItems();  // Récupère toutes les commandes avec leurs items
@@ -141,8 +142,17 @@ public List<OrderDto> getAllOrdersWithItems() {
             .map(OrderDto::new)  // Convertir chaque Order en OrderDto
             .collect(Collectors.toList());
 }
-
-
+    // fallback for RateLimiter
+    public List<OrderDto> getAllOrdersWithItemsFallback(Throwable throwable) {
+        // Gérer le fallback ici, comme retourner une liste vide ou des données par défaut
+        System.err.println("RateLimiter activé. Fallback appelé : " + throwable.getMessage());
+        return Collections.emptyList();
+    }
+    // Fallback pour Bulkhead
+    public List<OrderDto> getAllOrdersWithItemsBulkheadFallback(Throwable throwable) {
+        System.err.println("Bulkhead activé. Fallback appelé : " + throwable.getMessage());
+        return Collections.emptyList();
+    }
     public void envoyerCommande(Order commande) {
         System.out.println("Envoi de la commande à RabbitMQ : " + commande);
         ObjectMapper objectMapper = new ObjectMapper();

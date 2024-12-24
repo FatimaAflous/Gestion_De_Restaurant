@@ -5,6 +5,7 @@ import com.projet_restaurant.servicecommandes.Dto.OrderItemDto;
 import com.projet_restaurant.servicecommandes.Dto.OrderRequest;
 import com.projet_restaurant.servicecommandes.Entity.Order;
 import com.projet_restaurant.servicecommandes.Entity.OrderItem;
+import com.projet_restaurant.servicecommandes.Service.Implementation.NotificationService;
 import com.projet_restaurant.servicecommandes.Service.Implementation.OrderService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -161,5 +162,13 @@ public class OrderAPI {
     }
 
 
+    @Autowired
+    private NotificationService notificationService;
 
+    // Endpoint pour envoyer une notification de changement de statut
+    @PostMapping("/notifications/order-status")
+    public String notifyOrderStatus(@RequestParam Long orderId, @RequestParam String status) {
+        notificationService.notifyPaymentStatus(orderId, status);
+        return "Notification envoyée avec succès pour la commande " + orderId + " avec le statut " + status;
+    }
 }
