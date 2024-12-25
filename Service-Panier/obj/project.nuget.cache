@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "FmRTYLRwWJM=",
+  "dgSpecHash": "RVoqB4vmoKc=",
   "success": true,
   "projectFilePath": "C:\\Gestion_Restaurant\\Service-Panier\\Service-Panier.csproj",
   "expectedPackageFiles": [
@@ -143,6 +143,10 @@
     "C:\\Users\\Admin\\.nuget\\packages\\steeltoe.discovery.clientcore\\3.2.8\\steeltoe.discovery.clientcore.3.2.8.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\steeltoe.discovery.eureka\\3.2.8\\steeltoe.discovery.eureka.3.2.8.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\steeltoe.extensions.configuration.abstractions\\3.2.8\\steeltoe.extensions.configuration.abstractions.3.2.8.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\steeltoe.extensions.configuration.cloudfoundrybase\\3.2.8\\steeltoe.extensions.configuration.cloudfoundrybase.3.2.8.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\steeltoe.extensions.configuration.configserverbase\\3.2.8\\steeltoe.extensions.configuration.configserverbase.3.2.8.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\steeltoe.extensions.configuration.configservercore\\3.2.8\\steeltoe.extensions.configuration.configservercore.3.2.8.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\steeltoe.extensions.configuration.placeholderbase\\3.2.8\\steeltoe.extensions.configuration.placeholderbase.3.2.8.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\swashbuckle.aspnetcore\\6.0.7\\swashbuckle.aspnetcore.6.0.7.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\swashbuckle.aspnetcore.annotations\\7.2.0\\swashbuckle.aspnetcore.annotations.7.2.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\7.2.0\\swashbuckle.aspnetcore.swagger.7.2.0.nupkg.sha512",

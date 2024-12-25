@@ -8,19 +8,6 @@ using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
-// Ajouter Swagger
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddSwaggerGen(options =>
-{
-    // Configurer des informations de base sur l'API (facultatif)
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Service Panier API",
-        Version = "v1",
-        Description = "Une API pour gérer les paniers dans le service restaurant"
-    });
-});
 
 builder.Services.AddDiscoveryClient(builder.Configuration);
 

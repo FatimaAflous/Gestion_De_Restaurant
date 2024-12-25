@@ -141,3 +141,7 @@ C:\Gestion_Restaurant\Service-Panier\bin\Debug\net9.0\Service-Panier.pdb
 C:\Gestion_Restaurant\Service-Panier\obj\Debug\net9.0\Service-Panier.genruntimeconfig.cache
 C:\Gestion_Restaurant\Service-Panier\obj\Debug\net9.0\ref\Service-Panier.dll
 C:\Gestion_Restaurant\Service-Panier\bin\Debug\net9.0\Swashbuckle.AspNetCore.Annotations.dll
+C:\Gestion_Restaurant\Service-Panier\bin\Debug\net9.0\Steeltoe.Extensions.Configuration.CloudFoundryBase.dll
+C:\Gestion_Restaurant\Service-Panier\bin\Debug\net9.0\Steeltoe.Extensions.Configuration.ConfigServerBase.dll
+C:\Gestion_Restaurant\Service-Panier\bin\Debug\net9.0\Steeltoe.Extensions.Configuration.ConfigServerCore.dll
+C:\Gestion_Restaurant\Service-Panier\bin\Debug\net9.0\Steeltoe.Extensions.Configuration.PlaceholderBase.dll

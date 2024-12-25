@@ -18,6 +18,7 @@
           "Pomelo.EntityFrameworkCore.MySql": "9.0.0-preview.2.efcore.9.0.0",
           "Steeltoe.Discovery.ClientCore": "3.2.8",
           "Steeltoe.Discovery.Eureka": "3.2.8",
+          "Steeltoe.Extensions.Configuration.ConfigServerCore": "3.2.8",
           "Swashbuckle.AspNetCore": "6.0.7",
           "Swashbuckle.AspNetCore.Annotations": "7.2.0"
         },
@@ -1332,6 +1333,59 @@
         },
         "runtime": {
           "lib/net6.0/Steeltoe.Extensions.Configuration.Abstractions.dll": {
+            "assemblyVersion": "3.2.8.0",
+            "fileVersion": "3.2.8.0"
+          }
+        }
+      },
+      "Steeltoe.Extensions.Configuration.CloudFoundryBase/3.2.8": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.EnvironmentVariables": "6.0.0",
+          "Microsoft.Extensions.Configuration.Json": "6.0.0",
+          "Steeltoe.Common": "3.2.8",
+          "Steeltoe.Extensions.Configuration.Abstractions": "3.2.8"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Steeltoe.Extensions.Configuration.CloudFoundryBase.dll": {
+            "assemblyVersion": "3.2.8.0",
+            "fileVersion": "3.2.8.0"
+          }
+        }
+      },
+      "Steeltoe.Extensions.Configuration.ConfigServerBase/3.2.8": {
+        "dependencies": {
+          "Steeltoe.Common.Http": "3.2.8",
+          "Steeltoe.Extensions.Configuration.CloudFoundryBase": "3.2.8",
+          "Steeltoe.Extensions.Configuration.PlaceholderBase": "3.2.8",
+          "System.Net.Http.Json": "3.2.1"
+        },
+        "runtime": {
+          "lib/netstandard2.1/Steeltoe.Extensions.Configuration.ConfigServerBase.dll": {
+            "assemblyVersion": "3.2.8.0",
+            "fileVersion": "3.2.8.0"
+          }
+        }
+      },
+      "Steeltoe.Extensions.Configuration.ConfigServerCore/3.2.8": {
+        "dependencies": {
+          "Microsoft.Extensions.Hosting": "6.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
+          "Steeltoe.Extensions.Configuration.ConfigServerBase": "3.2.8"
+        },
+        "runtime": {
+          "lib/net6.0/Steeltoe.Extensions.Configuration.ConfigServerCore.dll": {
+            "assemblyVersion": "3.2.8.0",
+            "fileVersion": "3.2.8.0"
+          }
+        }
+      },
+      "Steeltoe.Extensions.Configuration.PlaceholderBase/3.2.8": {
+        "dependencies": {
+          "Steeltoe.Common": "3.2.8",
+          "Steeltoe.Extensions.Configuration.Abstractions": "3.2.8"
+        },
+        "runtime": {
+          "lib/net6.0/Steeltoe.Extensions.Configuration.PlaceholderBase.dll": {
             "assemblyVersion": "3.2.8.0",
             "fileVersion": "3.2.8.0"
           }
@@ -3030,6 +3084,34 @@
       "sha512": "sha512-ZfnU0Oa2vRhYKZ6CckttY7IUFZ5sgHl6gLB+HMgos99l4yop9AQhqdR/6Vi5HNGTIFeyvbcsmPgNMrZvbKjKyw==",
       "path": "steeltoe.extensions.configuration.abstractions/3.2.8",
       "hashPath": "steeltoe.extensions.configuration.abstractions.3.2.8.nupkg.sha512"
+    },
+    "Steeltoe.Extensions.Configuration.CloudFoundryBase/3.2.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vY9crHyz3ZkEY3InfXbYLK5Xe0yQ3nLnTtGFobQAicJRh9zexP0XOywckzAVN2yE6tGRyh5Su1qc6Gh7gj3CIA==",
+      "path": "steeltoe.extensions.configuration.cloudfoundrybase/3.2.8",
+      "hashPath": "steeltoe.extensions.configuration.cloudfoundrybase.3.2.8.nupkg.sha512"
+    },
+    "Steeltoe.Extensions.Configuration.ConfigServerBase/3.2.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Y7jyKz1jgPyHGlNVLQGDh9UQwWaPZnXaDPKWN/cxcvUWdqiA7C42d/LLA9lrIvHsV62nDbSNSYsFlvyh9z3xUQ==",
+      "path": "steeltoe.extensions.configuration.configserverbase/3.2.8",
+      "hashPath": "steeltoe.extensions.configuration.configserverbase.3.2.8.nupkg.sha512"
+    },
+    "Steeltoe.Extensions.Configuration.ConfigServerCore/3.2.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HYN9N/iUY1XqfZuHUwvALJlzJARY4Iklk2u2cAoOKPgFjrYmb/JrQmmbTZwe3uwEuB0Ju421j5/GaOtwRS9NDA==",
+      "path": "steeltoe.extensions.configuration.configservercore/3.2.8",
+      "hashPath": "steeltoe.extensions.configuration.configservercore.3.2.8.nupkg.sha512"
+    },
+    "Steeltoe.Extensions.Configuration.PlaceholderBase/3.2.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pjgs1BlPZrMYKINx7AZY/ln+yKIu+xWHxtSl+E068eVyZ89nDH4t+v9TlPImNvQ7FbDR11QUs/JDQ39qhK/Lyw==",
+      "path": "steeltoe.extensions.configuration.placeholderbase/3.2.8",
+      "hashPath": "steeltoe.extensions.configuration.placeholderbase.3.2.8.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/6.0.7": {
       "type": "package",
