@@ -20,9 +20,10 @@
           <span
             class="badge"
             [ngClass]="{
-              'badge-success': order.status === 'PENDING',
+              'badge-primary': order.status === 'PENDING',
               'badge-warning': order.status === 'PROCESSING',
-              'badge-danger': order.status === 'CANCELLED'
+              'badge-danger': order.status === 'CANCELLED',
+              'badge-success': order.status === 'PAID'
             }"
           >
             {{ order.status }}
@@ -49,7 +50,7 @@
         <td>
           <button
             class="btn btn-outline-primary btn-sm"
-            (click)="openStatusModal(order)"
+            (click)="changer_status()"
           >
             <i class="bi bi-pencil-square"></i> Modifier Statut
           </button>
@@ -61,61 +62,3 @@
 
 
 
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="statusModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="statusModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="statusModalLabel">Changer le Statut</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="orderStatus">Statut</label>
-            <select
-              id="orderStatus"
-              class="form-control"
-              [(ngModel)]="selectedOrder.status"
-              name="status"
-            >
-              <option value="PENDING">PENDING</option>
-              <option value="PROCESSING">PROCESSING</option>
-              <option value="CANCELLED">CANCELLED</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-dismiss="modal"
-        >
-          Annuler
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="updateOrderStatus()"
-        >
-          Enregistrer
-        </button>
-      </div>
-    </div>
-  </div>
-</div>

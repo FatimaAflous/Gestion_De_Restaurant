@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
+//import { WebSocketServiceService } from './services/web-socket-service.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -15,10 +16,8 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   title = 'Service-Front-End';
-  ngOnInit(): void {
-    //this.authService.checkUserLoginStatus();
-  }
-  constructor(private router: Router, private authService:AuthService) {}
+
+  constructor(private router: Router, private authService:AuthService /*,private webSocketService: WebSocketServiceService*/) {}
 
   shouldDisplayHeader(): boolean {
     return !this.router.url.includes('/admin-dashboard') && !this.router.url.includes('/client-dashboard');
@@ -26,5 +25,10 @@ export class AppComponent {
 
   shouldDisplayFooter(): boolean {
     return !this.router.url.includes('/admin-dashboard') && !this.router.url.includes('/client-dashboard');
+  }
+
+  ngOnInit() {
+    //this.webSocketService.connect();
+    //this.webSocketService.connect(); // Connexion WebSocket au démarrage
   }
 }

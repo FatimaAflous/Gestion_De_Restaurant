@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
-import { Observable, throwError, tap, map } from 'rxjs';
+import { HttpClient , HttpHeaders} from '@angular/common/http';
+import { switchMap, tap, catchError } from 'rxjs/operators';
+import { Observable, throwError, map } from 'rxjs';
 import { Route, Router } from '@angular/router';
 import { Order } from '../models/order.model';
+import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
 export class CommandeService {
 
-  constructor(private http: HttpClient , private router:Router) { }
+  constructor(private http: HttpClient , private router:Router , private authService:AuthService) { }
   private apiUrl = 'http://localhost:8084/api/orders';
   private payUrl = 'http://localhost:5000';
 
@@ -69,6 +70,19 @@ export class CommandeService {
     );
   }
 
+  getCustomerOrders(): Observable<any> {
+    console.log('Début de la récupération des commandes clients');
 
+    return this.authService.getCurrentUser().pipe(
+      switchMap((user) => {
+        const userId = user.id;
+        console.log('ID de l\'utilisateur connecté:', userId);
+
+        // Envoyer l'ID dans l'en-tête HTTP
+        const headers = new HttpHeaders().set('X-User-ID', userId.toString());
+        return this.http.get(`${this.apiUrl}/customer`, { headers });
+      })
+    );
+  }
 
 }

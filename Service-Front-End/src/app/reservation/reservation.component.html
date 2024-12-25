@@ -1,0 +1,79 @@
+<body>
+  <header>
+      <h1>Réservez votre table</h1>
+  </header>
+  <div class="container">
+      <div class="intro">
+          <p>VEUILLEZ REMPLIR CE FORMULAIRE POUR NOUS FAIRE UNE DEMANDE DE RÉSERVATION</p>
+          <p>
+              Pour toute réservation le jour même, merci de nous contacter directement<br>
+              par téléphone au <strong>+212 6837525</strong> ou par email à <strong>F&H MOODBITES.gmail.com</strong>.
+          </p>
+      </div>
+
+      <form id="reservationForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+              <label for="prenom">Prénom *</label>
+              <input type="text" id="prenom" name="prenom" [(ngModel)]="prenom" placeholder="Entrez votre prénom" required>
+            </div>
+          <div class="form-group">
+              <label for="nom">Nom *</label>
+              <input type="text" id="nom" name="nom" [(ngModel)]="nom" placeholder="Entrez votre nom" required>
+            </div>
+          <div class="form-group">
+              <label for="ville">Ville *</label>
+              <input type="text" id="ville" name="ville" [(ngModel)]="ville" placeholder="Votre ville" required>
+            </div>
+          <div class="form-group">
+              <label for="pays">Pays *</label>
+              <input type="tel" id="telephone" name="telephone" [(ngModel)]="telephone" placeholder="+212..." required>
+            </div>
+          <div class="form-group">
+              <label for="telephone">Téléphone *</label>
+              <input type="tel" id="telephone" name="telephone" placeholder="+212..." required>
+          </div>
+          <div class="form-group">
+              <label for="email">E-mail *</label>
+              <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="Votre email" required>
+            </div>
+          <div class="form-group">
+              <label for="confirmEmail">Réécrire l’adresse e-mail *</label>
+              <input type="email" id="confirmEmail" name="confirmEmail" [(ngModel)]="confirmEmail" placeholder="Confirmez votre email" required>
+            </div>
+          <div class="form-group">
+            <label for="creneau">Créneaux disponibles *</label>
+            <select id="creneau" name="creneau" [(ngModel)]="selectedCreneau" required>
+              <option value="" disabled selected>-- Choisir un créneau --</option>
+              <option *ngFor="let creneau of creneaux" [value]="creneau.id">
+                {{ creneau.debut | date: 'yyyy-MM-dd, HH:mm' }} - {{ creneau.fin | date: 'HH:mm' }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="table">Tables disponibles *</label>
+            <select id="table" name="table" [(ngModel)]="selectedTable" required>
+              <option value="" disabled selected>-- Choisir une table --</option>
+              <option *ngFor="let table of tables" [value]="table.id">
+                Table {{ table.nom }} ({{ table.capacite }} personnes)
+              </option>
+            </select>
+          </div>
+
+
+          <div class="checkbox">
+              <input type="checkbox" id="legalNotice" required>
+              <label for="legalNotice">
+                  J’ai lu et j’accepte les mentions légales et la protection des données personnelles.
+              </label>
+          </div>
+
+          <button type="submit" class="submit-btn">Valider la réservation</button>
+      </form>
+
+      <div class="footer-text">
+          <p>Conformément à la loi 09-08, vous disposez d’un droit d’accès, de rectifications et d’opposition au traitement de vos données personnelles. Ce traitement a fait l’objet d’une déclaration et d’une demande de transfert auprès de la CNDP sous les numéros D-300/2024 et T-HB-129/2024.</p>
+          <p>Ce site est protégé par reCAPTCHA. Les règles de confidentialité et les conditions d'utilisation de Google s'appliquent.</p>
+      </div>
+  </div>
+</body>

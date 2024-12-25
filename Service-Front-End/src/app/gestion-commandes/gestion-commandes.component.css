@@ -34,8 +34,8 @@
   padding: 5px 10px;
 }
 
-.badge-success {
-  background-color: #28a745;
+.badge-primary {
+  background-color: #2386d2;
   color: #fff;
 }
 
@@ -46,6 +46,11 @@
 
 .badge-danger {
   background-color: #dc3545;
+  color: #fff;
+}
+
+.badge-success {
+  background-color: #0a960c;
   color: #fff;
 }
 

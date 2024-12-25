@@ -10,7 +10,7 @@
       <li><a href="#">Home</a></li>
      <!-- <a routerLink="/menu">Menu</a> -->
       <a (click)="navigateToMenu()">Menu</a>
-      <li><a href="#">Reservation</a></li>
+     <a (click)="navigateToReservation()">Reservation </a>
       <li><a href="#">About Us</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
@@ -30,7 +30,7 @@
       </div>
       <div *ngIf="!isUserLoggedIn">
         <button class="signin-btn" (click)="navigateToSignIn()">Sign In</button>
-        
+
         <button class="signup-btn" (click)="navigateToSignUp()">Sign Up</button>
       </div>
     </div>

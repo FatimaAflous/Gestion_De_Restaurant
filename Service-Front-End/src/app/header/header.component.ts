@@ -3,12 +3,13 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Importer CommonModule ici
 import { CookieService } from 'ngx-cookie-service'; // Importez un service pour gérer les cookies
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
-    CommonModule  // Ajouter CommonModule dans les imports du composant
+    CommonModule   // Ajouter CommonModule dans les imports du composant
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
@@ -54,6 +55,9 @@ export class HeaderComponent  {
     this.router.navigate(['/menu']);
   }
 
+  navigateToReservation() {
+    this.router.navigate(['/reservation']);
+  }
 
 logout() {
     this.authService.logout();

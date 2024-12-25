@@ -12,7 +12,9 @@ import { GestionCommandesComponent } from './gestion-commandes/gestion-commandes
 import { AcceuilClientDashboardComponent } from './acceuil-client-dashboard/acceuil-client-dashboard.component';
 import { CartComponent } from './cart/cart.component';
 import { PaymentComponent } from './payment/payment.component';
-
+import { HistoriqueCommandesComponent } from './historique-commandes/historique-commandes.component';
+import { ReservationComponent } from './reservation/reservation.component';
+import { GestionCreneauComponent } from './gestion-creneau/gestion-creneau.component';
 export const routes: Routes = [
   { path: 'home', component: MainComponent } ,// Route pour l'inscription
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -21,6 +23,7 @@ export const routes: Routes = [
   { path: 'menu', component: MenuComponent }, // Route pour l'inscription
   { path: 'cart', component: CartComponent },  // Ajouter une route pour le panier
   { path:  'payment', component: PaymentComponent},
+  { path: 'reservation',component:ReservationComponent},
   //ADMIN
 
   { path: 'admin-dashboard', component: AdminDashboardComponent,canActivate: [AuthGuard],data: { roles: ['ADMIN'] } , children: [
@@ -28,6 +31,7 @@ export const routes: Routes = [
     { path: '', redirectTo: 'acceuil', pathMatch: 'full' },
     { path: 'gestion-menu', component: GestionMenuComponent},
     { path: 'gestion-commandes', component: GestionCommandesComponent},
+    { path: 'gestion-creneaux', component: GestionCreneauComponent},
 
 
   //CLIENT
@@ -36,6 +40,8 @@ export const routes: Routes = [
   { path: 'client-dashboard', component: ClientDashboardComponent,canActivate: [AuthGuard],data: { roles: ['CLIENT'] } , children: [
     { path: 'acceuil', component: AcceuilClientDashboardComponent},
     { path: '', redirectTo: 'acceuil', pathMatch: 'full' },
+    { path: 'historique-commandes', component: HistoriqueCommandesComponent},
+
   ]},
 
 

@@ -1,0 +1,87 @@
+<div class="container">
+  <!-- Bouton Ajouter Créneau -->
+  <div class="d-flex justify-content-end mb-3">
+ </div>
+
+ <div *ngIf="!isAddingCreneau">
+   <button class="btn btn-primary btn-sm" (click)="toggleForm()">Ajouter Créneau</button>
+   <h2>Liste des créneaux</h2>
+   <ul class="list-group">
+     <li *ngFor="let creneau of creneaux" class="list-group-item">
+       {{ creneau.debut }} - {{ creneau.fin }}
+     </li>
+   </ul>
+   <div class="container">
+    <h2>Liste des Tables</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nom de la Table</th>
+          <th>Capacité</th>
+          <th>Créneau Début</th>
+          <th>Créneau Fin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let table of tables; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ table.nom }}</td>
+          <td>{{ table.capacite }}</td>
+          <td>{{ table.creneau.debut }}</td>
+          <td>{{ table.creneau.fin }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+ </div>
+
+ <!-- Formulaire pour ajouter un créneau uniquement si isAddingCreneau est vrai -->
+ <div *ngIf="isAddingCreneau">
+   <button class="btn btn-secondary btn-sm" (click)="toggleForm()">Afficher Liste des Créneaux</button>
+   <h2>Sélectionner une date et une heure de début et de fin</h2>
+   <div class="form-group">
+     <label for="dateDebut">Date et Heure de début</label>
+     <input type="datetime-local" id="dateDebut" class="form-control" [(ngModel)]="dateDebut" />
+   </div>
+
+   <div class="form-group">
+     <label for="dateFin">Date et Heure de fin</label>
+     <input type="datetime-local" id="dateFin" class="form-control" [(ngModel)]="dateFin" />
+   </div>
+
+   <div class="d-flex justify-content-end">
+     <button class="btn btn-primary btn-sm" (click)="onSubmitCreneau()">Créer Créneau</button>
+   </div>
+
+
+
+   <!--creer table-->
+   <div>
+    <h3>Créer une Table</h3>
+
+    <div class="form-group">
+      <label for="tableNom">Nom de la Table</label>
+      <input type="text" id="tableNom" class="form-control" [(ngModel)]="tableNom" />
+    </div>
+
+    <div class="form-group">
+      <label for="tableCapacite">Capacité</label>
+      <input type="number" id="tableCapacite" class="form-control" [(ngModel)]="tableCapacite" />
+    </div>
+
+    <div class="form-group">
+      <label for="creneauSelect">Choisir un créneau</label>
+      <select id="creneauSelect" class="form-control" [(ngModel)]="selectedCreneauId">
+        <option value="" disabled selected>Sélectionner un créneau</option>
+        <option *ngFor="let creneau of creneaux" [value]="creneau.id">
+          {{ creneau.debut }} - {{ creneau.fin }}
+        </option>
+      </select>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-success btn-sm" (click)="onSubmitTable()">Créer Table</button>
+    </div>
+  </div>
+
