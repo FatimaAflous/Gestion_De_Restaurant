@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .sessionManagement(sess-> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/login/**", "/refresh/**" , "/infos-user/**","swagger-ui/**").permitAll()
+                        .requestMatchers("/login/**", "/refresh/**" , "/infos-user/**","swagger-ui/**" , "/api/v1/users/**").permitAll()
                        )
                 .authorizeRequests(auth -> auth.anyRequest().authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
