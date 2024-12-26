@@ -1,0 +1,4 @@
+org\example\reservationservice\repository\ReservationRepositoryTest.class
+org\example\reservationservice\ReservationServiceApplicationTests.class
+org\example\reservationservice\service\CreneauServiceTest.class
+org\example\reservationservice\controller\ReservationControllerTest.class

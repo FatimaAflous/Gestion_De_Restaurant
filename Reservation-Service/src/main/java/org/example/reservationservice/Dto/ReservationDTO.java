@@ -7,7 +7,6 @@ public class ReservationDTO {
     private String telephone;
     private Long creneauId;
     private Long tableId;
-    private int nombreDePersonnes;
 
     public String getPrenom() {
         return prenom;
@@ -57,13 +56,6 @@ public class ReservationDTO {
         this.tableId = tableId;
     }
 
-    public int getNombreDePersonnes() {
-        return nombreDePersonnes;
-    }
-
-    public void setNombreDePersonnes(int nombreDePersonnes) {
-        this.nombreDePersonnes = nombreDePersonnes;
-    }
 
     // Getters et Setters
 }

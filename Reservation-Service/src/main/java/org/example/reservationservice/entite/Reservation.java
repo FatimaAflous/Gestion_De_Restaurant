@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Reservation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +28,7 @@ public class Reservation {
 
     private int nombreDePersonnes;
     private LocalDateTime createdAt = LocalDateTime.now();
+    @Enumerated(EnumType.STRING)
     private StatutReservation statut = StatutReservation.EN_ATTENTE;
 
     public Long getId() {

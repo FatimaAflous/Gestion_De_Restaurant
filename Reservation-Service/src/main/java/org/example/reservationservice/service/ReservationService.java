@@ -53,7 +53,6 @@ public class ReservationService {
         if (tableReservee) {
             throw new RuntimeException("La table est déjà réservée pour ce créneau");
         }
-
         // Trouver ou créer le client
         Client client = clientRepository.findByEmail(reservationDTO.getEmail())
                 .orElseGet(() -> {
@@ -70,11 +69,35 @@ public class ReservationService {
         reservation.setClient(client);
         reservation.setCreneau(creneau);
         reservation.setTable(table);
-        reservation.setNombreDePersonnes(reservationDTO.getNombreDePersonnes());
         reservation.setCreatedAt(LocalDateTime.now());
         reservation.setStatut(StatutReservation.EN_ATTENTE);
-
         return reservationRepository.save(reservation);
+    }
+
+
+    // Méthode pour récupérer toutes les réservations avec les détails
+    public List<Reservation> getAllReservations() {
+        // Récupérer toutes les réservations avec leurs relations associées
+        return reservationRepository.findAllWithDetails();
+    }
+
+    public List<Reservation> getReservationsByClient(String clientNom) {
+        // Chercher le client avec le nom donné
+        Client client = clientRepository.findByNom(clientNom)
+                .orElseThrow(() -> new RuntimeException("Client non trouvé"));
+
+        // Retourner les réservations associées à ce client
+        return reservationRepository.findByClient(client);
+    }
+
+    public Reservation cancelReservation(Long reservationId) {
+        // Récupérer la réservation par son ID
+        return reservationRepository.findById(reservationId).map(reservation -> {
+            // Changer le statut de la réservation
+            reservation.setStatut(StatutReservation.ANNULEE);
+            // Sauvegarder les modifications
+            return reservationRepository.save(reservation);
+        }).orElse(null); // Retourne null si la réservation n'est pas trouvée
     }
 }
 
