@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Menu-Service" />
+        <module name="Service-Discovery" />
+        <module name="Service-Configuration" />
+        <module name="Service-Utilisateurs" />
+      </profile>
+      <profile name="Annotation profile for Reservation-Service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="Service-Commandes" />
+        <module name="Service-Gateway" />
+        <module name="Reservation-Service" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Menu-Service" options="-parameters" />
+      <module name="Reservation-Service" options="-parameters" />
+      <module name="Service-Commandes" options="-parameters" />
+      <module name="Service-Configuration" options="-parameters" />
+      <module name="Service-Discovery" options="-parameters" />
+      <module name="Service-Gateway" options="-parameters" />
+      <module name="Service-Utilisateurs" options="-parameters" />
+    </option>
+  </component>
+</project>

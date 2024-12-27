@@ -11,6 +11,63 @@ public class MenuDto {
     private String name;
     private String category;
     private String image;
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getPromotion() {
+        return isPromotion;
+    }
+
+    public void setPromotion(Boolean promotion) {
+        isPromotion = promotion;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     private Boolean isPromotion;
 
     public MenuDto(Menu menu) {
